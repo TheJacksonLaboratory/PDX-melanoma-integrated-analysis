@@ -10,6 +10,42 @@ import pandas as pd
 from matplotlib import cm
 from scipy.ndimage import gaussian_filter
 
+def plotFishCustom(obs, modality='RNA', absolute=True, palette=None):
+
+    palette.update({'-3':'white', '-2':'white', '-1':'white'})
+    
+    obs['T'] = obs['T'].replace({'TE': 'T-2', 'TC': 'T-1'})
+    root = -1
+    
+    if modality=='RNA':
+        identity = 'rna_cluster'
+    elif modality=='Imaging':
+        identity = 'im_cluster'
+    elif modality=='CNV':
+        identity = 'cnv_cluster'
+        
+    obs = obs.loc[obs[identity]!='-1']
+    
+    u = sorted(obs[identity].unique().astype(int))
+    parent_tree_df = pd.DataFrame([[root, v] for v in u], columns=["ParentId", "ChildId"])
+
+    obs['fID'] = obs[identity].astype(int).values
+
+    T_str_mapping = obs['T'].drop_duplicates()
+    T_str_mapping.index = T_str_mapping.str.split('T', expand=True)[1].astype(str)
+    T_str_mapping = T_str_mapping.to_dict()
+    T_str_mapping.update({'-2': 'T-2', '-1': 'T-1', '1': 'T1'})
+    
+    obs['fSTEP'] = obs['T'].astype(str).replace({v:k for k,v in T_str_mapping.items()}).astype(int).values
+    populations_df = obs.set_index(['fID', 'fSTEP'])[identity].groupby(level=[0, 1], axis=0).count().reset_index().rename({'fID': 'Id', 'fSTEP': 'Step', identity: 'Pop'}, axis=1)
+    populations_df.loc[root] = root, root+1, 1
+    
+    setup_figure(width=512, height=256, absolute=absolute)
+    plt.title(f'{modality} clusters', fontsize=30)
+    data = process_data(populations_df, parent_tree_df, absolute=absolute, seed=0, color_by=None, colorDict=palette)
+    fish_plot(*data, xticksMapping=T_str_mapping)
+    return
+
 
 def _stackplot(x, *args, ax=None, colors=None, labels=(), **kwargs):
     """Draw a stacked area plot.
@@ -207,7 +243,7 @@ def fish_plot(pops_stack, steps, colors=None, pop_max=None, ax=None, xticksMappi
     plt.draw()
     labels = ax.get_xticklabels()
     if not xticksMapping is None:
-        labels = [xticksMapping[str(tick.get_text()).replace('−', '-')] for tick in labels]
+        labels = [xticksMapping[str(tick.get_text()).replace('−', '-')].replace('-1', 'C').replace('-2', 'E') for tick in labels]
     ax.set_xticklabels(labels)
     return
 

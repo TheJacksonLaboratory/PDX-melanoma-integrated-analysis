@@ -1,6 +1,7 @@
 
 import os
 import copy
+from tqdm import tqdm
 import numpy as np
 import pandas as pd
 
@@ -10,15 +11,40 @@ import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 
 import scipy.cluster.hierarchy
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import cdist, pdist, squareform
 
-def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, clusterObs=True, p=4, palette=None, colormap=plt.cm.bwr, colormapBad='grey',
+import warnings
+warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+from numba import jit
+
+@jit
+def sMED(v1, v2):
+
+    """Simple Minimum Event Distance (MED), similar (but not equivalent!) to the one implemented in MEDALT.
+    MED is the minimal number and the series of single-copy gains or losses that are required to evolve one genome to another.
+    """
+    a = v1 - v2
+    a = a[np.roll(a, -1) != a]
+    a = np.abs(a[a != 0]).sum()
+    return int(a)
+
+def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, clusterObs=True, p=4, palette=None, colormap=plt.cm.bwr, colormapBad='grey', minCellsPerGroup=15,
           addGeneLabels=False, fontsizeGeneLabels=12, saveFig=False, borderWidth=0.005, groupWidth=0.0375, dendrogramLineWidth=2.0, dendrogramLineColor='#555555', safetyLimit=1000,
           addLinesOnHeatmap=True, addLinesOnGroups=True, vmin=None, vmax=None, returnDistancesOnly=False, bootstrapObs=False, bootstrapNum=100,
           linkageMethod='ward', keepOriginalOrderObs=False, linkageMetric='euclidean', # 'correlation', 'cosine', 'euclidean'
-          clusterObsByGroups=True, reference=None, referenceLabel='Reference', colorbarLabels=None, colorbarLabel='Gene Expression', figureName='figure.png', dpi=600):
+          useMEDforObs=False, optimalOrderingForObs=False, useMEDforObsGroups=False, sampleMED=50,
+          clusterObsByGroups=True, reference=dict(), referenceLabel='Reference', colorbarLabels=None, colorbarLabel='Gene Expression', figureName='figure.png', dpi=600):
     
     # colorbarLabels: ['High', 'Low'], ['Ampl.', 'Del.'], None
+
+    #print('Before filtering:', df.shape)
+    cols = df_groups.columns.values.tolist()
+    temp_sel = df_groups.reset_index().set_index(cols).groupby(level=list(range(len(cols))))['spot'].count()
+    df_groups = df_groups.loc[pd.Index(df_groups.values).isin(temp_sel[temp_sel>=minCellsPerGroup].index)]
+    df = df[df_groups.index]
+    print('After filtering:', df.shape)
     
     # translate_pos was copied from scanpy:
     # https://github.com/scverse/scanpy/blob/2e98705347ea484c36caa9ba10de1987b09081bf/scanpy/plotting/_anndata.py#L2247
@@ -50,7 +76,6 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
         except:
             pass
            
-    print(df.shape, df_groups.shape)
     assert (df.columns==df_groups.index).all()
     
     if not returnDistancesOnly:
@@ -79,10 +104,32 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
     # Add dendrogram obs
     if clusterObs and not keepOriginalOrderObs:  
         if clusterObsByGroups:
-            M = dfg.values.T
-            M = np.nan_to_num(M, nan=np.max(M, axis=None))
-            P = pdist(M, metric=linkageMetric)
-            L = scipy.cluster.hierarchy.linkage(P, method=linkageMethod, optimal_ordering=True)
+            if useMEDforObsGroups:
+                print('Calculating sMED metric by groups.')
+                print('Subsampling each group to have at most %s observations.' % sampleMED)
+                dfP = pd.DataFrame(index=dfg.columns, columns=dfg.columns, data=0.)
+                df_gt = df_groups.reset_index().set_index(dfP.index.names)
+
+                for i_a in tqdm(range(len(dfP.index))):
+                    item_a = dfP.index[i_a]
+                    df_temp_a = df[df_gt.loc[item_a].values.T[0]] # vars by obs
+                    df_temp_a = df_temp_a.sample(min(df_temp_a.shape[1], sampleMED), axis=1, replace=False)
+                    for i_b in range(len(dfP.index)):
+                        if i_b < i_a:
+                            item_b = dfP.index[i_b]
+                            df_temp_b = df[df_gt.loc[item_b].values.T[0]]
+                            df_temp_b = df_temp_b.sample(min(df_temp_b.shape[1], sampleMED), axis=1, replace=False)
+                            temp = cdist(df_temp_a.values.T, df_temp_b.values.T, metric=sMED).astype(int).mean()
+                            dfP.loc[item_a, item_b] = temp
+                            dfP.loc[item_b, item_a] = temp
+
+                P = squareform(dfP.values)
+            else:
+                M = dfg.values.T
+                M = np.nan_to_num(M, nan=np.max(M, axis=None))
+                P = pdist(M, metric=linkageMetric)
+
+            L = scipy.cluster.hierarchy.linkage(P, method=linkageMethod, optimal_ordering=False if useMEDforObsGroups else True)
             D = scipy.cluster.hierarchy.dendrogram(L, orientation='right', no_plot=True)
 
             orderObs = D['leaves']
@@ -93,7 +140,25 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
                 return dfP
 
             dfg = dfg.iloc[:, orderObs]
+
+            tree = scipy.cluster.hierarchy.to_tree(L, rd=True)[1]
+            meta = seg.rename('count').to_frame()
+            for level in seg.index.names:
+                meta[level + '_color'] = pd.Series(meta.index.get_level_values(level)).apply(lambda s: matplotlib.colors.to_hex(palette[s])).values
+
+            meta = meta.reset_index()
+
+            cond = meta['count'] > 0
+            for key in reference.keys():
+                cond = cond & (meta[key]==reference[key])
+            try:
+                root = np.where(cond)[0][0]
+            except:
+                print('Root not found')
+                root = 0
+
             seg = seg.iloc[orderObs]
+            #print(seg)
 
             ax = fig.add_axes([xc, ya, xd-xc-b, yb-ya-b], frame_on=False)
 
@@ -103,6 +168,9 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
                 xs = translate_pos(xs, ticks, orig_ticks)
                 ax.plot(ys, xs, color=dendrogramLineColor, linewidth=dendrogramLineWidth, clip_on=False)
                 
+            ax.tick_params(length=0, labelsize=10, zorder=np.inf)
+            #ax.set(xticks=[], xticklabels=[])
+            #ax.set(yticks=ticks, yticklabels=orderObs)
             ax.set(xticks=[], yticks=[], xticklabels=[], yticklabels=[])
             ax.set(ylim=(0.5, df.shape[1]+0.5))
             ax.set_facecolor('white')
@@ -110,8 +178,26 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
         elif df.shape[1]<=safetyLimit:
             M = df.values.T
             M = np.nan_to_num(M, nan=np.max(M, axis=None))
-            P = pdist(M, metric=linkageMetric)
-            L = scipy.cluster.hierarchy.linkage(P, method=linkageMethod, optimal_ordering=True)
+            if useMEDforObs:
+                print('Using sMED')
+                P = pdist(M, metric=sMED)
+            else:
+                P = pdist(M, metric=linkageMetric)
+
+            L = scipy.cluster.hierarchy.linkage(P, method=linkageMethod, optimal_ordering=optimalOrderingForObs)
+
+
+            tree = scipy.cluster.hierarchy.to_tree(L, rd=True)[1]
+            root = 0
+
+            cols = df_groups.columns.values.tolist()
+            meta = pd.Series(index=pd.MultiIndex.from_arrays(df_groups[cols].values.T, names=cols), data=1, name='count').to_frame()
+
+            for level in cols:
+                meta[level + '_color'] = pd.Series(meta.index.get_level_values(level)).apply(lambda s: matplotlib.colors.to_hex(palette[s])).values
+
+            meta = meta.reset_index()
+
 
             ax = fig.add_axes([xc, ya, xd-xc-b, yb-ya-b], frame_on=False)
             
@@ -162,9 +248,9 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
                 
         ax.set(xticks=[], yticks=[], xticklabels=[], yticklabels=[])
         ax.set(xlim=(0, df.shape[0]), ylim=(0, ax.get_ylim()[1])) 
-                       
+    
+    # Add heatmap
     if True:
-        # Add heatmap
         ax = fig.add_axes([xb, ya, xc-xb-b, yb-ya-b], frame_on=True)
         ax.grid(False)
         
@@ -194,15 +280,16 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
             ax.set_xticklabels(dfc.index.values, rotation=90, fontsize=fontsizeGeneLabels)
         else:
             ax.set(xticks=[])
-        ax.set(ylim=(0.5, M.shape[0]+0.5))
+
+        ax.set(ylim=(-0.5, M.shape[0]-0.5))
         
         # TODO: make conditions to make sure the lines are off when observations aren't ordered by groups
         if addLinesOnHeatmap:
             for pos in [0] + seg.cumsum().values.tolist():
                 ax.axhline(pos+0.5, color='k', linestyle='-', linewidth=1.0)
             
+    # Add groups
     if True:
-        # Add groups
         if clusterVar:
             ax = fig.add_axes([xa, ya, xb-xa-b, yb-ya-b], frame_on=False)
         else:
@@ -238,7 +325,7 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
             
         ax.set(xticks=[], yticks=[], xticklabels=[], yticklabels=[], ylim=(0, len(df_groups_c)))
  
-        if not reference is None:
+        if len(reference)>0:
             try:
                 levx = df_groups_co.shape[1]/2
                 levy = df_groups_co.reset_index().set_index(list(reference.keys()))
@@ -295,8 +382,8 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
         for igroup, group in enumerate(df_groups.columns):
             ax.text(igroup + 0.5, -1.25 + 0.5, group.title(), ha='center', va='center', fontsize=14)
         
+    # Add colorbar
     if True:
-        # Add colorbar
         if clusterObs:
             ax = fig.add_axes([xd+b, ya, xe-xd, yc-ya], frame_on=False)
         else:
@@ -321,4 +408,33 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
     if saveFig:
         plt.savefig(figureName, dpi=dpi)
     
-    return df_reordered.reindex(index=df_reordered.index[::-1])
+    if useMEDforObsGroups and clusterObsByGroups:
+        return root, tree, meta
+    else:
+        return df_reordered.reindex(index=df_reordered.index[::-1])
+
+
+def prepForCplot(ad_all, sample_name='sample', cluster_name='cluster', quantile=0.95, cap=None):
+
+    def getDFFromAD(ad, sample_name=sample_name, cluster_name=cluster_name):
+        df_temp = ad.to_df().T
+        df_temp.columns = pd.MultiIndex.from_frame(ad.obs.reset_index()[['index', sample_name, cluster_name]], names=['spot', 'sample', 'cluster'])
+        df_temp.index = pd.Index(ad.var.reset_index()['index'], name='symbol')
+        df_temp = df_temp.loc[(df_temp>0).mean(axis=1)>0]
+        return df_temp
+
+    df_all = getDFFromAD(ad_all)
+    df_meta = df_all.columns.to_frame()
+    df_meta = df_meta.droplevel(['sample', 'cluster'], axis=0)[['sample', 'cluster']]
+    df_meta['time'] = df_meta['sample'].str.split('_', expand=True)[1]
+    df_meta['sample'] = df_meta['sample'].apply(lambda s: s.split('_')[1] + ' ' + s.split('_')[2])
+    df_meta = df_meta[['sample', 'time', 'cluster']].astype('category')
+    df_all = df_all.droplevel(['sample', 'cluster'], axis=1)
+    print(df_all.shape)
+
+    df_all = (df_all.T / np.nanquantile(df_all.replace(0, np.nan), quantile, axis=1)).T.dropna()
+
+    if not cap is None:
+        df_all[df_all > cap] = cap
+
+    return df_all, df_meta

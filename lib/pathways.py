@@ -6,7 +6,7 @@ genesDicts = dict()
 loadPathwayRGD = lambda name: np.sort(pd.read_csv(name, delimiter='\t', index_col=0)['Symbol'].values.tolist())
 loadPathway = lambda name: np.sort(pd.read_csv(name, delimiter='\t', index_col=0).loc['MAPPED_SYMBOLS'].values).tolist()[0].split(',')
 
-filesPath = 'c:/Projects/A_ST/'
+filesPath = 'c:/Projects/A_ST/github-pipelines/PDX-melanoma-integrated-analysis/pathways/'
 
 genesDicts.update({'PKA': loadPathwayRGD(filesPath + 'annotation PKA.tab')})
 
@@ -39,6 +39,8 @@ genesDicts.update({'NRF2': loadPathway(filesPath + 'WP_NRF2_PATHWAY.v7.5.1.tsv')
 genesDicts.update({'FAO': loadPathway(filesPath + 'FATTY_ACID_OXIDATION.v7.5.1.tsv')})
 
 genesDicts.update({'KEGG_FATTY_ACID': loadPathway(filesPath + 'KEGG_FATTY_ACID_METABOLISM.v2022.1.Hs.tsv')})
+genesDicts.update({'HALLMARK_FATTY_ACID': loadPathway(filesPath + 'HALLMARK_FATTY_ACID_METABOLISM.v2022.1.Hs.tsv')})
+genesDicts.update({'REACTOME_FATTY_ACID': loadPathway(filesPath + 'REACTOME_FATTY_ACID_METABOLISM.v2022.1.Hs.tsv')})
 
 genesDicts.update({'Reactome-FAO': loadPathway(filesPath + 'REACTOME_MITOCHONDRIAL_FATTY_ACID_BETA_OXIDATION.v7.5.1.tsv')})
 genesDicts.update({'OXPHOS': loadPathway(filesPath + 'WP_ELECTRON_TRANSPORT_CHAIN_OXPHOS_SYSTEM_IN_MITOCHONDRIA.v7.5.1.tsv')})

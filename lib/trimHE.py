@@ -4,11 +4,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
 
-def prepInfoJSON(tdatapath, model, fname, eps=50, min_samples=500, selobj=None, f=1.5, efx=0.35, efy=0.35, manshift=[0,0,0,0]):
+def prepInfoJSON(tdatapath, model, fname, eps=50, min_samples=500, downsample_factor=3, selobj=None, f=1.5, efx=0.35, efy=0.35, manshift=[0,0,0,0], suff='_level_6.tiff'):
 
     img_RGB_high_res = plt.imread(tdatapath + fname)
 
-    img_RGB_high_res  = img_RGB_high_res[::3, ::3, :]
+    #print(img_RGB_high_res.shape)
+
+    img_RGB_high_res  = img_RGB_high_res[::downsample_factor, ::downsample_factor, :]
 
     v = img_RGB_high_res[:, :, :3].copy()
     v = v.mean(axis=2)
@@ -38,7 +40,7 @@ def prepInfoJSON(tdatapath, model, fname, eps=50, min_samples=500, selobj=None, 
                      np.median(v.T[1][np.where(labels==l)[0]]),
                      l, va='center', ha='center', fontsize=20)
 
-    id = fname[:-len('_level_6.tiff')]
+    id = fname[:-len(suff)]
 
     objects = sorted(list(set(vco.to_dict().keys()).difference([-1])))
     res = dict()
@@ -84,9 +86,53 @@ def prepInfoJSON(tdatapath, model, fname, eps=50, min_samples=500, selobj=None, 
         y2 =  y1 + res[selobj][1]['size']*img_RGB_high_res.shape[0]
         axs[1].plot([x1, x1, x2, x2, x1], [y1, y2, y2, y1, y1], linewidth=0.5, c='crimson')
 
-        print(res[selobj][0]['size'] * res[selobj][1]['size'])
+        try:
+            with open(tdatapath + 'properties_%s.json' % (id), 'r') as tempfile:
+                info = json.loads(tempfile.read())
+            print(info)
+
+            full_shape = int(info['openslide.bounds-height']), int(info['openslide.bounds-width'])
+            print('%s Mp' % int((res[selobj][0]['size']*full_shape[1] * res[selobj][1]['size']*full_shape[0] / 10**6)))
+
+        except Exception as exception:
+            #print(exception)
+            pass
            
     axs[1].set_aspect('equal')
+    plt.show()
+    
+    return
+
+
+def prepInfoJSON_ROI(tdatapath, model, fname, id='', downsample_factor=4, coords=[0.0,0.0], size=[1.0,1.0]):
+
+    img_RGB_high_res = plt.imread(tdatapath + fname)[::downsample_factor, ::downsample_factor, :]
+
+    fig, ax = plt.subplots(1, 1, figsize=((img_RGB_high_res.shape[1]/20)/downsample_factor, (img_RGB_high_res.shape[0]/20)/downsample_factor))
+
+    ax.imshow(img_RGB_high_res[:, :, :3], origin='lower')
+    lim = ax.get_ylim()
+    ax.set_ylim([lim[1], lim[0]])
+    ax.set_xticks([])
+    ax.set_xticklabels([])
+    ax.set_yticks([])
+    ax.set_yticklabels([])
+
+
+    info = {"model": model, "id": id, "0": {"location": coords[0], "size": size[0]}, "1": {"location": coords[1], "size": size[1]}}
+       
+
+    with open(tdatapath + '%s.json' % id, 'w') as outfile:
+        outfile.write(json.dumps(info))
+
+    x1 =  coords[0]*img_RGB_high_res.shape[1]
+    x2 =  x1 + size[0]*img_RGB_high_res.shape[1]
+    y1 =  coords[1]*img_RGB_high_res.shape[0]
+    y2 =  y1 + size[1]*img_RGB_high_res.shape[0]
+
+    ax.plot([x1, x1, x2, x2, x1], [y1, y2, y2, y1, y1], linewidth=2.0, c='crimson', clip_on=False)
+           
+    ax.set_aspect('equal')
     plt.show()
     
     return

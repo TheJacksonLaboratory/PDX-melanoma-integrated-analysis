@@ -7,9 +7,18 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 
-def vplot(df, dfc, name='Name', figsize=(20,5), palette=None, step=None, q=[0, 1], psteps=[0.1, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0], nlines=10, addZeroLine=False, rightylabel=False, saveName=None):
+from scanpy.tools._score_genes import score_genes
+
+def vplot(df, dfc, name='Name', figsize=(20,5), palette=None, step=None, q=[0, 1], psteps=[0.1, 0.25, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0],
+          nlines=10, addZeroLine=False, rightylabel=False, saveName=None, vmin=None, vmax=None):
     
-    vmin, vmax = df.stack().replace([np.inf, -np.inf], np.nan).dropna().quantile(q).values
+    tvmin, tvmax = df.stack().replace([np.inf, -np.inf], np.nan).dropna().quantile(q).values
+
+    if vmin is None:
+        vmin = tvmin
+
+    if vmax is None:
+        vmax = tvmax
     
     if step is None:
         psteps = np.array(psteps)
@@ -28,7 +37,7 @@ def vplot(df, dfc, name='Name', figsize=(20,5), palette=None, step=None, q=[0, 1
         return lower_adjacent_value, upper_adjacent_value
 
     def set_axis_style(ax, labels):
-        ax.xaxis.set_tick_params(direction='out', rotation=90)
+        ax.xaxis.set_tick_params(direction='out', rotation=0) # 90
         ax.xaxis.set_ticks_position('bottom')
         ax.set_xticks(np.arange(1, len(labels) + 1), labels=labels)
         ax.set_xlim(0.25, len(labels) + 0.75)
@@ -92,7 +101,8 @@ def vplot(df, dfc, name='Name', figsize=(20,5), palette=None, step=None, q=[0, 1
     ax.vlines(inds, quartile1, quartile3, color='k', linestyle='-', lw=3)
     ax.vlines(inds, whiskers_min, whiskers_max, color='k', linestyle='-', lw=1)
 
-    labels = ['SC' + sample.split('_')[0][-3:] for sample, cluster in zip(meta_samples, meta_clusters)]
+    labels = [cluster for sample, cluster in zip(meta_samples, meta_clusters)]
+    #labels = ['' + sample.split('_')[2][:] for sample, cluster in zip(meta_samples, meta_clusters)]
     #labels = [sample.replace('_', ' ') + ': ' + cluster for sample, cluster in zip(meta_samples, meta_clusters)]
     set_axis_style(ax, labels)
     
@@ -102,8 +112,8 @@ def vplot(df, dfc, name='Name', figsize=(20,5), palette=None, step=None, q=[0, 1
     tmin = lims[0] + (lims[1] - lims[0])*0.025
     tmax = lims[1] - (lims[1] - lims[0])*0.075
     
-    for i, c in enumerate(meta_clusters):
-        ax.text(i+1, tmin, c, ha='center')
+    #for i, c in enumerate(meta_clusters):
+    #    ax.text(i+1, tmin, c, ha='center')
     
     pos = []
     last_pos = 0
@@ -113,50 +123,85 @@ def vplot(df, dfc, name='Name', figsize=(20,5), palette=None, step=None, q=[0, 1
         last_pos += l/2 
         
     for i, s in enumerate(pos):
-        label = df.columns[i].split('_')[1].split('-')[1]
+        label = df.columns[i].split('_')[1] + '\n' + df.columns[i].split('_')[2]
         if label == '1':
             label = 'C4'
-        ax.text(pos[i]+0.5, tmax, label, ha='center')
+        ttext = ax.text(pos[i]+0.5, tmax, label, ha='center')
+        ttext.set_path_effects([path_effects.Stroke(linewidth=6, foreground='w'),path_effects.Normal()])
 
     fig.tight_layout()
 
     if not saveName is None:
         plt.savefig(saveName + '.png', dpi=300, facecolor='w')
+
+    plt.show()
     
     return
 
-def addLogRatioOfScores(score1, score2, shift=0.01, ads=None, ids=None):
+def addLogRatioOfScores(score1, score2, shift=0.01, ads=None, ids=None, vdivider='_over_', vprefix='score_'):
     
-    name = '%s_over_%s' % (score1, score2)
+    name = '%s%s%s' % (score1, vdivider, score2)
     
     for id in ids:
         ad = ads[id]
         
-        s1 = ad.obs['score_' + score1].copy()
+        s1 = ad.obs[vprefix + score1].copy()
         s1 -= s1.min()
         s1 = s1.replace(0, shift)
         
-        s2 = ad.obs['score_' + score2].copy()
+        s2 = ad.obs[vprefix + score2].copy()
         s2 -= s2.min() - shift
         s2 = s2.replace(0, shift)
 
-        ad.obs['score_' + name] = np.log(s1 / s2)
+        ad.obs[vprefix + name] = np.log(s1 / s2)
     
     return name
 
+def wrapVplotRatio(score1, score2, genesDicts=None, ads=None, ids=None, identity=None, palette=None, vdivider='_over_', vprefix='score_', **kwargs):
 
-def wrapVplot(score, identity=None, palette=None, ads=None, ids=None, vprefix='score_', **kwargs):
-    
-    score = vprefix + score
-    
-    df = pd.concat([pd.Series(ads[id].obs[score].fillna(0).values) for id in ids], keys=ids, axis=1)
-    dfc = pd.concat([pd.Series(ads[id].obs[identity].values.astype(int)) for id in ids], keys=ids, axis=1)
-    
-    return vplot(df, dfc, name=score, palette=palette, **kwargs)
+    checkAddScore(score1, genes=genesDicts[score1], ads=ads, ids=ids, vprefix=vprefix)
+    checkAddScore(score2, genes=genesDicts[score2], ads=ads, ids=ids, vprefix=vprefix)
 
-def wrapVplotGene(gene, identity=None, palette=None, ads=None, ids=None, **kwargs):
+    score = addLogRatioOfScores(score1, score2, ads=ads, ids=ids, vprefix=vprefix, vdivider=vdivider)
+
+    return wrapVplotScore(score, genesDicts={score: []}, addZeroLine=True, rightylabel=True, identity=identity, palette=palette, ads=ads, ids=ids, vprefix=vprefix, **kwargs)
+
+def wrapVplotScore(score, genesDicts=None, identity=None, selected=[], palette=None, ads=None, ids=None, vprefix='score_', **kwargs):
     
-    df = pd.concat([pd.Series(ads[id][:, gene].to_df()[gene].values) for id in ids], keys=ids, axis=1)
-    dfc = pd.concat([pd.Series(ads[id].obs[identity].values.astype(int)) for id in ids], keys=ids, axis=1)
+    checkAddScore(score, genes=genesDicts[score], ads=ads, ids=ids, vprefix=vprefix)
+
+    if len(selected)==0:
+        selected = pd.Series(np.hstack([ads[id].obs[identity] for id in ids])).sort_values().unique().tolist()
+
+    df = pd.concat([pd.Series(ads[id][ads[id].obs[identity].isin(selected), :].obs[vprefix + score].fillna(0).values) for id in ids], keys=ids, axis=1)
+    dfc = pd.concat([pd.Series(ads[id][ads[id].obs[identity].isin(selected), :].obs[identity].values.astype(int)) for id in ids], keys=ids, axis=1)
     
-    return vplot(df, dfc, name='gene_' + gene, palette=palette, **kwargs)
+    return vplot(df, dfc, name=vprefix + score, palette=palette, **kwargs)
+
+def wrapVplotGene(gene, identity=None, selected=[], palette=None, ads=None, ids=None, vprefix='gene_', **kwargs):
+
+    if len(selected)==0:
+        selected = pd.Series(np.hstack([ads[id].obs[identity] for id in ids])).sort_values().unique().tolist()
+    
+    allGenes = pd.concat([ads[id][ads[id].obs[identity].isin(selected), :].var for id in ids]).index.unique()
+    if not gene in allGenes:
+        print('Gene not found:', gene)
+        return allGenes
+
+    df = pd.concat([pd.Series(ads[id][ads[id].obs[identity].isin(selected), gene].to_df()[gene].values) for id in ids], keys=ids, axis=1)
+    dfc = pd.concat([pd.Series(ads[id][ads[id].obs[identity].isin(selected), :].obs[identity].values.astype(int)) for id in ids], keys=ids, axis=1)
+    
+    return vplot(df, dfc, name=vprefix + gene, palette=palette, **kwargs)
+
+def checkAddScore(score, genes=None, ads=None, ids=None, vprefix='score_', ctrl=50, verbose=0):
+
+    for id in ids:
+        if not vprefix + score in ads[id].obs.columns:
+            if verbose>0:
+                print('Scoring genes:', id, score, len(genes), len(ads[id].var.index.intersection(genes)))
+            score_genes(ads[id], 
+                        gene_list=ads[id].var.index.intersection(genes), 
+                        score_name=vprefix + score,
+                        ctrl_size=ctrl)
+
+    return

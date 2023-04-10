@@ -1,0 +1,20 @@
+STANDARD_NAME	GOBP_MELANOCYTE_PROLIFERATION
+SYSTEMATIC_NAME	M42966
+CATEGORY_CODE	C5
+SUB_CATEGORY_CODE	GO:BP
+MSIGDB_URL	https://www.gsea-msigdb.org/gsea/msigdb/human/geneset/GOBP_MELANOCYTE_PROLIFERATION
+CHIP	Human_NCBI_Gene_ID
+DESCRIPTION_BRIEF	The multiplication or reproduction of melanocytes, resulting in the expansion of a cell population. A melanocyte is a pigment cell derived from the neural crest. It contains melanin-filled pigment granules, which give a brown to black appearance. [CL:0000148, GOC:uh, PMID:22637532]
+DESCRIPTION_FULL	
+PMID	
+GEOID	
+AUTHORS	
+CONTRIBUTOR	Gene Ontology
+CONTRIBUTOR_ORG	Gene Ontology Consortium
+EXACT_SOURCE	GO:0097325
+FILTERED_BY_SIMILARITY	
+EXTERNAL_NAMES_FOR_SIMILAR_TERMS	
+EXTERNAL_DETAILS_URL	http://amigo.geneontology.org/amigo/term/GO:0097325
+GENESET_LISTING_URL	
+MEMBERS	2191,387837,6909,7474,81285
+MAPPED_SYMBOLS	FAP,CLEC12B,TBX2,WNT5A,OR51E2

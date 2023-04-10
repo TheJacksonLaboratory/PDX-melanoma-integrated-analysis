@@ -1,0 +1,20 @@
+STANDARD_NAME	BIOCARTA_P53HYPOXIA_PATHWAY
+SYSTEMATIC_NAME	M5202
+CATEGORY_CODE	C2
+SUB_CATEGORY_CODE	CP:BIOCARTA
+MSIGDB_URL	https://www.gsea-msigdb.org/gsea/msigdb/human/geneset/BIOCARTA_P53HYPOXIA_PATHWAY
+CHIP	HUMAN_SEQ_ACCESSION
+DESCRIPTION_BRIEF	Hypoxia and p53 in the Cardiovascular system
+DESCRIPTION_FULL	Hypoxic stress, like DNA damage, induces p53 protein accumulation and p53-dependent apoptosis in oncogenically transformed cells. Unlike DNA damage, hypoxia does not induce p53-dependent cell cycle arrest, suggesting that p53 activity is differentially regulated by these two stresses. Hypoxia induces p53 protein accumulation, but in contrast to DNA damage, hypoxia fails to induce endogenous downstream p53 effector mRNAs and proteins, such as p21, Bax, CIP1, WAF1 etc. Hypoxia does not inhibit the induction of p53 target genes by ionizing radiation, indicating that p53-dependent transactivation requires a DNA damage-inducible signal that is lacking under hypoxic treatment alone. The phosphatidylinositol 3-OH-kinase-Akt pathway inhibits p53-mediated transcription and apoptosis. Mdm2, a ubiquitin ligase for p53, plays a central role in regulation of the stability of p53 and serves as a good substrate for Akt. Mdm-2 targets the p53 tumor suppressor for ubiquitin-dependent degradation by the proteasome, but, in addition, the p53 transcription factor induces Mdm-2, thus, establishing a feedback loop. Hypoxia or DNA damage by abrogating binding of HIF-1 with VHL and p53 with Mdm-2, respectively, leads to stabilization and accumulation transcriptionally active HIF-1 and p53. At the molecular level, DNA damage induces the interaction of p53 with the transcriptional activator p300 as well as with the transcriptional corepressor mSin3A. In contrast, hypoxia primarily induces an interaction of p53 with mSin3A, but not with p300.
+PMID	
+GEOID	
+AUTHORS	
+CONTRIBUTOR	BioCarta
+CONTRIBUTOR_ORG	BioCarta
+EXACT_SOURCE	
+FILTERED_BY_SIMILARITY	
+EXTERNAL_NAMES_FOR_SIMILAR_TERMS	
+EXTERNAL_DETAILS_URL	https://data.broadinstitute.org/gsea-msigdb/msigdb/biocarta/human/h_p53hypoxiaPathway.gif
+GENESET_LISTING_URL	
+MEMBERS	AJ583693,AK304652,BM469215,BM551246,DA833614,JX015388,NM_000051,NM_000389,NM_000546,NM_000598,NM_000903,NM_000927,NM_001013398,NM_001014431,NM_001014432,NM_001017963,NM_001025433,NM_001025434,NM_001039492,NM_001098202,NM_001126112,NM_001126113,NM_001126114,NM_001126115,NM_001126116,NM_001126117,NM_001126118,NM_001199741,NM_001199742,NM_001220777,NM_001220778,NM_001243084,NM_001243116,NM_001429,NM_001450,NM_001530,NM_001924,NM_002392,NM_002503,NM_002750,NM_002945,NM_004324,NM_004606,NM_005163,NM_005345,NM_005348,NM_006145,NM_006497,NM_078467,NM_138761,NM_138763,NM_138764,NM_138923,NM_139046,NM_139047,NM_139049,NM_181054,NM_201555,NM_201557
+MAPPED_SYMBOLS	HIC1,HSPA1A,TP53,,ABCB1,MDM2,ATM,CDKN1A,TP53,IGFBP3,NQO1,ABCB1,IGFBP3,AKT1,AKT1,HSP90AA1,NQO1,NQO1,FHL2,HIC1,TP53,TP53,TP53,TP53,TP53,TP53,TP53,GADD45A,GADD45A,CDKN1A,CDKN1A,HIF1A,NFKBIB,EP300,FHL2,HIF1A,GADD45A,MDM2,NFKBIB,MAPK8,RPA1,BAX,TAF1,AKT1,HSPA1A,HSP90AA1,DNAJB1,HIC1,CDKN1A,BAX,BAX,BAX,TAF1,MAPK8,,MAPK8,HIF1A,FHL2,FHL2

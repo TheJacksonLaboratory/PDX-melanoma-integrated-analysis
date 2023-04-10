@@ -1,0 +1,20 @@
+STANDARD_NAME	BIOCARTA_TRKA_PATHWAY
+SYSTEMATIC_NAME	M9134
+CATEGORY_CODE	C2
+SUB_CATEGORY_CODE	CP:BIOCARTA
+MSIGDB_URL	https://www.gsea-msigdb.org/gsea/msigdb/cards/BIOCARTA_TRKA_PATHWAY
+CHIP	HUMAN_SEQ_ACCESSION
+DESCRIPTION_BRIEF	Trka Receptor Signaling Pathway
+DESCRIPTION_FULL	Nerve growth factor (NGF) is a neurotrophic factor that stimulates neuronal survival and growth through TrkA, a member of the trk family of tyrosine kinase receptors that also includes TrkB and TrkC. Some NGF responses are also mediated or modified by p75LNTR, a low affinity neurotrophin receptor. Binding of NGF to TrkA stimulates neuronal survival, and also proliferation. Pathways coupled to these responses are linked to TrkA through association of signaling factors with specific amino acids in the TrkA cytoplasmic domain. Cell survival through inhibition of apoptosis is signaled through activation of PI3-kinase and AKT. Ras-mediated signaling and phospholipase C both activate the MAP kinase pathway to stimulate proliferation.
+PMID	
+GEOID	
+AUTHORS	
+CONTRIBUTOR	BioCarta
+CONTRIBUTOR_ORG	BioCarta
+EXACT_SOURCE	
+FILTERED_BY_SIMILARITY	
+EXTERNAL_NAMES_FOR_SIMILAR_TERMS	
+EXTERNAL_DETAILS_URL	https://data.broadinstitute.org/gsea-msigdb/msigdb/biocarta/human/h_trkaPathway.gif
+GENESET_LISTING_URL	
+MEMBERS	AI334281,AK021510,AK055431,AL833457,BM458681,NM_001002231,NM_001007792,NM_001012331,NM_001014431,NM_001014432,NM_001130040,NM_001130041,NM_001130442,NM_001202859,NM_001242466,NM_001256080,NM_002086,NM_002506,NM_002529,NM_002660,NM_002737,NM_002738,NM_003029,NM_003863,NM_005163,NM_005343,NM_005551,NM_005633,NM_006218,NM_176795,NM_181504,NM_181523,NM_181524,NM_182811,NM_183001,NM_203506,NM_212535
+MAPPED_SYMBOLS	PIK3R1,PIK3CA,PRKCA,SOS1,,KLK2,NTRK1,NTRK1,AKT1,AKT1,SHC1,SHC1,HRAS,SHC1,PIK3R1,KLK2,GRB2,NGF,NTRK1,PLCG1,PRKCA,PRKCB,SHC1,DPM2,AKT1,HRAS,KLK2,SOS1,PIK3CA,HRAS,PIK3R1,PIK3R1,PIK3R1,PLCG1,SHC1,GRB2,PRKCB

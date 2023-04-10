@@ -4,12 +4,36 @@ import pandas as pd
 import scanpy as sc
 
 import matplotlib
-from matplotlib import cm
+from matplotlib import cm, colors
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
 
 import scipy.stats
+
+def plotPhiHeatmap(gridPhi, X_grid_full, emb='emb', figsize=(5, 4), percentile=95.0, interpolation='bicubic',
+                   cmapcolors=['black', 'maroon', 'red', 'white', 'orange', 'yellow', 'lightcyan'], aspect=None):
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    m = np.percentile(np.abs(gridPhi), percentile)
+
+    cmap = colors.LinearSegmentedColormap.from_list('None', [colors.to_rgb(c) for c in cmapcolors], N=300)
+
+    if aspect is None:
+        aspect = (X_grid_full[:, :, 1].max() - X_grid_full[:, :, 1].min()) / (X_grid_full[:, :, 0].max() - X_grid_full[:, :, 0].min())
+
+    im = ax.imshow(gridPhi.T[::-1,:], cmap=cmap, vmax=m, vmin=-m, interpolation=interpolation, aspect=aspect);
+    ax.set_xticks([])
+    ax.set_xticklabels([])
+    ax.set_yticks([])
+    ax.set_yticklabels([])
+    ax.set_xlabel(f'{emb}_0')
+    ax.set_ylabel(f'{emb}_1')
+
+    plt.colorbar(mappable=im, ax=ax)
+
+    return fig
 
 def simpleCorrPlot(ida, idb, ax, ad_all, human_ratio=0.5, alpha=0.5):
 

@@ -321,7 +321,7 @@ def computFullGridVelocity(ad, emb):
     V = grid_full.copy()
     V[loc[0], loc[1]] = V_grid
     
-    return X, V
+    return X, V, X_emb
 
 def getGridPhi(X, V, R=2, regionShape='disk'):
     
@@ -349,6 +349,9 @@ def getGridPhi(X, V, R=2, regionShape='disk'):
             d = X[ii, jj]  - X[i0, j0]
             w = (np.sign(d)) * V[ii, jj]
             Phi[i0, j0] = w.sum()
+
+    Phi /= max(np.abs(Phi.max()), np.abs(Phi.min()))
+
     return Phi
 
 def getFiOfEmb(X, Phi, X_emb):
@@ -361,7 +364,7 @@ def getFiOfEmb(X, Phi, X_emb):
     
     return Phi_emb
 
-def getGridVelocityForSourceSink(V_grid_full, gridPhi, isSource=True):
+def getGridVelocityForSourceSink(X_grid_full, V_grid_full, gridPhi, isSource=True):
 
     shape = V_grid_full.shape
     

@@ -1,0 +1,50 @@
+Species	Term Accession	Term	Object	RGD ID	Symbol	Name	Type	Qualifiers	Evidence	Chr	Start	Stop	Reference(s)	Source(s)	Original Reference(s)	Notes
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1319601	ADCY1	adenylate cyclase 1	protein-coding		TAS	 7	45,574,140	45,723,116		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	737484	ADCY10	adenylate cyclase 10	protein-coding		TAS	 1	167,809,386	167,914,134		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	734219	ADCY2	adenylate cyclase 2	protein-coding		TAS	 5	7,396,138	7,830,081		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	732499	ADCY3	adenylate cyclase 3	protein-coding		TAS	 2	24,819,169	24,920,237		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	736108	ADCY4	adenylate cyclase 4	protein-coding		TAS	14	24,318,359	24,335,071		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	736882	ADCY5	adenylate cyclase 5	protein-coding		TAS	 3	123,282,296	123,449,090		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	735837	ADCY6	adenylate cyclase 6	protein-coding		ISO	12	48,766,194	48,789,961		RGD	 PMID:18948702 PMID:15579502	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	735780	ADCY7	adenylate cyclase 7	protein-coding		TAS	16	50,244,699	50,318,135		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	733733	ADCY8	adenylate cyclase 8	protein-coding		TAS	 8	130,780,301	131,040,909		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1312370	ADCY9	adenylate cyclase 9	protein-coding		TAS	16	3,953,387	4,116,442		RGD	 PMID:18948702	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1343676	AKAP1	A-kinase anchoring protein 1	protein-coding		TAS	17	57,085,246	57,121,344		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	70080	AKAP10	A-kinase anchoring protein 10	protein-coding		TAS	17	19,904,302	19,977,828		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	736276	AKAP11	A-kinase anchoring protein 11	protein-coding		ISO	13	42,271,477	42,323,261		RGD	 PMID:14715913 PMID:19319965 PMID:18385542	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	737243	AKAP12	A-kinase anchoring protein 12	protein-coding		TAS	 6	151,239,967	151,358,559		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	736118	AKAP13	A-kinase anchoring protein 13	protein-coding		TAS	15	85,380,603	85,749,358		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1353822	AKAP14	A-kinase anchoring protein 14	protein-coding		TAS	  X	119,895,893	119,920,716		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1348905	AKAP3	A-kinase anchoring protein 3	protein-coding		TAS	12	4,615,518	4,649,051		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	732830	AKAP4	A-kinase anchoring protein 4	protein-coding		TAS	  X	50,190,777	50,201,007		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1345297	AKAP5	A-kinase anchoring protein 5	protein-coding		TAS	14	64,465,499	64,474,503		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	69458	AKAP6	A-kinase anchoring protein 6	protein-coding		ISO	14	32,329,298	32,837,684		RGD	 PMID:14715913 PMID:19319965 PMID:11296225	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1350760	AKAP7	A-kinase anchoring protein 7	protein-coding		ISO	 6	131,125,627	131,283,532		RGD	 PMID:14715913 PMID:19319965 PMID:17901878	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	731444	AKAP8	A-kinase anchoring protein 8	protein-coding		TAS	19	15,353,385	15,379,787		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1349720	AKAP9	A-kinase anchoring protein 9	protein-coding		TAS	 7	91,940,862	92,110,673		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	733138	CRHR2	corticotropin releasing hormone receptor 2	protein-coding		ISO	 7	30,651,942	30,700,103	RGD	RGD	PMID:15911134 	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1350208	EZR	ezrin	protein-coding		TAS	 6	158,765,748	158,819,368		RGD	 PMID:14715913	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1603446	PALM2AKAP2	PALM2 and AKAP2 fusion	protein-coding		TAS	 9	109,640,787	110,172,512		RGD	 PMID:14715913 PMID:19319965	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	68649	PDE10A	phosphodiesterase 10A	protein-coding		TAS	 6	165,327,289	165,988,052		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	737612	PDE11A	phosphodiesterase 11A	protein-coding		TAS	 2	177,623,244	178,108,339		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	68458	PDE1A	phosphodiesterase 1A	protein-coding		TAS	 2	182,140,041	182,716,797		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	735556	PDE1B	phosphodiesterase 1B	protein-coding		TAS	12	54,549,601	54,579,239		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	68463	PDE1C	phosphodiesterase 1C	protein-coding		TAS	 7	31,616,777	32,428,224		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	730957	PDE2A	phosphodiesterase 2A	protein-coding		TAS	11	72,576,141	72,674,422		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	734436	PDE3A	phosphodiesterase 3A	protein-coding		TAS	12	20,368,537	20,688,583		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	732966	PDE3B	phosphodiesterase 3B	protein-coding		TAS	11	14,643,804	14,872,044		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	737080	PDE4A	phosphodiesterase 4A	protein-coding		TAS	19	10,416,773	10,469,631		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	733361	PDE4B	phosphodiesterase 4B	protein-coding		TAS	 1	65,792,510	66,374,579		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	737216	PDE4C	phosphodiesterase 4C	protein-coding		TAS	19	18,207,965	18,248,433		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	736102	PDE4D	phosphodiesterase 4D	protein-coding		ISO	 5	58,969,038	60,522,128		RGD	 PMID:17376027 PMID:11296225	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	68570	PDE7A	phosphodiesterase 7A	protein-coding		TAS	 8	65,714,334	65,842,064		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	732248	PDE7B	phosphodiesterase 7B	protein-coding		TAS	 6	135,851,701	136,195,574		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1601777	PDE8A	phosphodiesterase 8A	protein-coding		TAS	15	84,980,467	85,139,142		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1348334	PDE8B	phosphodiesterase 8B	protein-coding		TAS	 5	77,180,304	77,428,256		RGD	 PMID:17376027	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1344608	PRKACA	protein kinase cAMP-activated catalytic subunit alpha	protein-coding		TAS	19	14,091,688	14,117,762		RGD	 PMID:14715913	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1321558	PRKACB	protein kinase cAMP-activated catalytic subunit beta	protein-coding		TAS	 1	84,078,079	84,238,498		RGD	 PMID:14715913	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1345258	PRKACG	protein kinase cAMP-activated catalytic subunit gamma	protein-coding		TAS	 9	69,012,504	69,014,113		RGD	 PMID:14715913	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	735732	PRKAR1A	protein kinase cAMP-dependent type I regulatory subunit alpha	protein-coding		TAS	17	68,413,623	68,551,316		RGD	 PMID:14715913	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	1351287	PRKAR1B	protein kinase cAMP-dependent type I regulatory subunit beta	protein-coding		TAS	 7	549,197	728,934		RGD	 PMID:14715913	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	732434	PRKAR2A	protein kinase cAMP-dependent type II regulatory subunit alpha	protein-coding		TAS	 3	48,744,591	48,847,874		RGD	 PMID:14715913	
+Human	PW:0000543	protein kinase A (PKA) signaling pathway	gene	735310	PRKAR2B	protein kinase cAMP-dependent type II regulatory subunit beta	protein-coding		TAS	 7	107,044,705	107,161,811		RGD	 PMID:14715913	

@@ -1,0 +1,20 @@
+STANDARD_NAME	KEGG_MELANOGENESIS
+SYSTEMATIC_NAME	M7761
+CATEGORY_CODE	C2
+SUB_CATEGORY_CODE	CP:KEGG
+MSIGDB_URL	https://www.gsea-msigdb.org/gsea/msigdb/cards/KEGG_MELANOGENESIS
+CHIP	Human_NCBI_Gene_ID
+DESCRIPTION_BRIEF	Melanogenesis
+DESCRIPTION_FULL	Cutaneous melanin pigment plays a critical role in camouflage, mimicry, social communication, and protection against harmful effects of solar radiation. Melanogenesis is under complex regulatory control by multiple agents. The most important positive regulator of melanogenesis is the MC1 receptor with its ligands melanocortic peptides. MC1R activates the cyclic AMP (cAMP) response-element binding protein (CREB). Increased expression of MITF and its activation by phosphorylation (P) stimulate the transcription of tyrosinase (TYR), tyrosinase-related protein 1 (TYRP1), and dopachrome tautomerase (DCT), which produce melanin. Melanin synthesis takes place within specialized intracellular organelles named melanosomes. Melanin-containing melanosomes then move from the perinuclear region to the dendrite tips and are transferred to keratinocytes by a still not well-characterized mechanism.
+PMID	
+GEOID	
+AUTHORS	
+CONTRIBUTOR	KEGG
+CONTRIBUTOR_ORG	Kyoto Encyclopedia of Genes and Genomes
+EXACT_SOURCE	hsa04916
+FILTERED_BY_SIMILARITY	
+EXTERNAL_NAMES_FOR_SIMILAR_TERMS	
+EXTERNAL_DETAILS_URL	http://www.genome.jp/kegg/pathway/hsa/hsa04916.html
+GENESET_LISTING_URL	
+MEMBERS	10488,107,108,109,111,112,11211,113,114,115,1385,1387,148327,1499,163688,1638,1855,1856,1857,1906,1910,196883,2033,23236,2535,2770,2771,2773,2775,2776,2778,2932,3265,3815,3845,4157,4254,4286,434,4893,51176,51384,51806,5330,5331,5332,54361,5443,5566,5567,5568,5578,5579,5582,5594,5595,5604,5605,5613,5894,64764,652799,6932,6934,7299,7306,7471,7472,7473,7474,7475,7476,7477,7478,7479,7480,7481,7482,7483,7484,7855,7976,801,80326,805,808,810,81029,815,816,817,818,8321,8322,8323,8324,8325,8326,83439,84699,89780,90993
+MAPPED_SYMBOLS	CREB3,ADCY1,ADCY2,ADCY3,ADCY5,ADCY6,FZD10,ADCY7,ADCY8,ADCY9,CREB1,CREBBP,CREB3L4,CTNNB1,CALML6,DCT,DVL1,DVL2,DVL3,EDN1,EDNRB,ADCY4,EP300,PLCB1,FZD2,GNAI1,GNAI2,GNAI3,GNAO1,GNAQ,GNAS,GSK3B,HRAS,KIT,KRAS,MC1R,KITLG,MITF,ASIP,NRAS,LEF1,WNT16,CALML5,PLCB2,PLCB3,PLCB4,WNT4,POMC,PRKACA,PRKACB,PRKACG,PRKCA,PRKCB,PRKCG,MAPK1,MAPK3,MAP2K1,MAP2K2,PRKX,RAF1,CREB3L2,,TCF7,TCF7L2,TYR,TYRP1,WNT1,WNT2,WNT3,WNT5A,WNT6,WNT7A,WNT7B,WNT8A,WNT8B,WNT10B,WNT11,WNT2B,WNT9A,WNT9B,FZD5,FZD3,CALM1,WNT10A,CALM2,CALM3,CALML3,WNT5B,CAMK2A,CAMK2B,CAMK2D,CAMK2G,FZD1,FZD4,FZD6,FZD7,FZD8,FZD9,TCF7L1,CREB3L3,WNT3A,CREB3L1

@@ -237,25 +237,35 @@ def loadCNVfromInferCNV(metafile, files, discretize=True, delta=0.025):
 
     return df, dfm
 
-def exportClustersForQuPath(sample, samplePathNF2, thumbsDir, obs, palette):
-    dims_json_name = [name for name in os.listdir(thumbsDir) if ('.json' in name) and (sample[:-2] in name)][0]
+def exportClustersForQuPath(sample, samplePathNF2, thumbsDir, obs, palette, useROIfile=False):
+    dims_json_name = [name for name in os.listdir(thumbsDir) if ('.json' in name) and (sample in name.replace(' ', '_')) and ('dimensions' in name)][0]
+    #dims_json_name = [name for name in os.listdir(thumbsDir) if ('.json' in name) and (sample[:-2] in name) and ('dimensions' in name)][0]
     with open(thumbsDir + dims_json_name, 'r') as outfile:
         infodim = json.loads(outfile.read())
     x, y = infodim['x'], infodim['y']
+    print('x, y:', x, y)
 
     grid_json_name = samplePathNF2 + 'grid/grid.json'
     with open(grid_json_name, 'r') as outfile:
         infogrid = json.loads(outfile.read())
     xc, yc = infogrid['x'], infogrid['y']
+    print('xc, yc:', xc, yc)
 
-    roi_json_name = [name for name in os.listdir(thumbsDir) if ('.json' in name) and (sample[:-2] in name) and (('.oid%s.' % sample[-1]) in name)][0]
-    with open(thumbsDir + roi_json_name, 'r') as outfile:
-        inforoi = json.loads(outfile.read())
+    if useROIfile:
+        roi_json_name = [name for name in os.listdir(thumbsDir) if ('.json' in name) and (sample in name.replace(' ', '_')) and ('.oid' in name)][0]
+        #roi_json_name = [name for name in os.listdir(thumbsDir) if ('.json' in name) and (sample[:-2] in name) and (('.oid%s.' % sample[-1]) in name)][0]
+        with open(thumbsDir + roi_json_name, 'r') as outfile:
+            inforoi = json.loads(outfile.read())
 
-    scalex = inforoi['0']['size']*x/xc
-    scaley = inforoi['1']['size']*y/yc
-    shiftx = inforoi['0']['location']*x
-    shifty = inforoi['1']['location']*y
+        scalex = inforoi['0']['size']*x/xc
+        scaley = inforoi['1']['size']*y/yc
+        shiftx = inforoi['0']['location']*x
+        shifty = inforoi['1']['location']*y
+    else:
+        scalex = 1
+        scaley = 1
+        shiftx = 0
+        shifty = 0
 
     features = []
     df_temp = obs[['cluster', 'pxl_col_in_fullres', 'pxl_row_in_fullres']].set_index('cluster')
@@ -281,6 +291,103 @@ def exportClustersForQuPath(sample, samplePathNF2, thumbsDir, obs, palette):
         tempfile.write(json.dumps(gjson))
 
     return
+
+from skimage.draw import disk, rectangle
+
+from skimage.draw import polygon
+
+def makeMaskFromQuPathAnnotations(dims, jsonpath, filter=None):
+    
+    # {'type': str, 'features': [{'type': str, 'geometry': {'type': str, 'coordinates': list(1, xxx, 2)}, 'properties': {'object_type': str, 'isLocked': bool}}, ...]}
+    with open(jsonpath, 'r') as outfile:
+        data = json.loads(outfile.read())
+
+    mask = np.zeros((dims[0], dims[1])).astype(np.uint8)
+
+    polycount = 0
+    for wblock in data['features']:
+        obj = wblock['geometry']['coordinates']
+        
+        if isinstance(obj[0][0][0], list):
+            # This is a multipolypon
+            for p in obj:
+                a = np.array(p[0])
+                rr, cc = polygon(a[:, 1], a[:, 0])
+                mask[rr, cc] = 1
+                polycount += 1
+        else:
+            # This is a polygon
+            a = np.array(obj[0])
+            rr, cc = polygon(a[:, 1], a[:, 0])
+            mask[rr, cc] = 1
+            polycount += 1
+
+    print('Loaded %s objects (%s polygons)' % (len(data['features']), polycount))
+    
+    return mask
+
+def getMaskFromMetadata(df_metadata, tile_size=None, target_shape=None):
+
+    mask = np.zeros((target_shape[0], target_shape[1])).astype(np.uint8)
+    print(mask.shape)
+    tile_half_size = int((tile_size - 1) / 2)
+    coords = df_metadata[['col', 'row', 'mask']].values
+    for i in range(len(coords)):
+        if coords[i][2]==1:
+            cc, rr = rectangle(start=(coords[i][0] - tile_half_size, coords[i][1] - tile_half_size),
+                               end=  (coords[i][0] + tile_half_size, coords[i][1] + tile_half_size),
+                               shape=(mask.shape[1], mask.shape[0]))
+            mask[rr, cc] = 1
+
+    return mask
+
+def mapMaskToIiles(mask, df_metadata=None, tile_size=None, cutoff=0.5):
+
+    tile_half_size = int((tile_size - 1) / 2)
+    coords = df_metadata[['col', 'row']].values
+    out = []
+    for i in range(len(coords)):
+        cc, rr = rectangle(start=(coords[i][0] - tile_half_size, coords[i][1] - tile_half_size),
+                           end=  (coords[i][0] + tile_half_size, coords[i][1] + tile_half_size),
+                           shape=(mask.shape[1], mask.shape[0]))
+        fraction_filled = 1 if mask[rr, cc].ravel().mean() >= cutoff else 0
+        out.append(fraction_filled)
+
+    return pd.Series(index=df_metadata.index, data=out)
+
+def getMaskFromAd(ad, identity=None, imageid='lowres', target_shape=None):
+
+    sf = ad.uns['spatial']['library_id']['scalefactors'][f'tissue_{imageid}_scalef']
+    tile_size = int(np.ceil(ad.uns['spatial']['library_id']['scalefactors']['spot_diameter_fullres'] * sf))
+    tile_size += 1 if tile_size % 2 == 0 else 0
+    if identity is None:
+        df_temp = ad.obs[['pxl_row_in_fullres', 'pxl_col_in_fullres']].copy()
+        df_temp.columns = ['row', 'col']
+        df_temp['mask'] = 1
+    else:
+        df_temp = ad.obs[['pxl_row_in_fullres', 'pxl_col_in_fullres', identity]].copy()
+        df_temp.columns = ['row', 'col', 'mask']        
+    df_temp['row'] = (df_temp['row'] * sf).astype(int)
+    df_temp['col'] = (df_temp['col'] * sf).astype(int)
+    df_temp['mask'] = df_temp['mask'].replace({'0': 1, '-1': 0})
+    if target_shape is None:
+        target_shape = ad.uns['spatial']['library_id']['images'][imageid].shape
+
+    return getMaskFromMetadata(df_metadata=df_temp, tile_size=tile_size, target_shape=target_shape)
+
+def mapMaskToAd(mask, ad, identity='from_mask', imageid='lowres', cutoff=0.5):
+
+    sf = ad.uns['spatial']['library_id']['scalefactors'][f'tissue_{imageid}_scalef']
+    tile_size = int(np.ceil(ad.uns['spatial']['library_id']['scalefactors']['spot_diameter_fullres'] * sf))
+    tile_size += 1 if tile_size % 2 == 0 else 0
+    df_temp = ad.obs[['pxl_row_in_fullres', 'pxl_col_in_fullres']].copy()
+    df_temp.columns = ['row', 'col']
+    df_temp['row'] = (df_temp['row'] * sf).astype(int)
+    df_temp['col'] = (df_temp['col'] * sf).astype(int)
+    se = mapMaskToIiles(mask, df_metadata=df_temp, tile_size=tile_size, cutoff=cutoff)
+    ad.obs[identity] = se.values
+
+    return 
 
 def computFullGridVelocity(ad, emb):
     

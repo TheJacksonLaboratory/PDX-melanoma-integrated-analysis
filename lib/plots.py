@@ -1,4 +1,6 @@
 
+import os
+import pickle
 import numpy as np
 import pandas as pd
 import scanpy as sc
@@ -203,8 +205,8 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
 
 def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 5, fy=1.0, identity = None, palette = 'tab20', cmap = 'rainbow', title = None,
                    spot_size = 425, fontsize = 8, markerscale = 1.25, wspace = 0.15, hspace = 0.2, img_key = 'lowres',  x = 0.12, y = 0.93,
-                   maintainScale = False, bsize = 100, invert = False, decay_power = 3, alpha_quantile = 0.5, method = 'MED',
-                   linewidth_factor = 1.5, alpha=1.0, alpha_img=1.0, **kwargs):
+                   maintainScale = False, bsize = 100, invert = False, decay_power = 3, absolute_cutoff=None, alpha_quantile = 0.5, method = 'MED',
+                   linewidth_factor = 1.5, alpha=1.0, alpha_img=1.0, cacheEdges=False, cacheDir='cache', **kwargs):
 
     if ids is None:
         ids = sorted(ads.keys())
@@ -275,27 +277,53 @@ def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize =
 
         coords = ads[sample].obsm['spatial'].copy() * sf
         sspot_size = spot_size * sf
-        egdes = []
-        edgeweights = []
-        for i, p in enumerate(coords[:]):
-            dist = np.sqrt(((coords - p)**2).sum(axis=1))
-            cond = (dist > 0.5*sspot_size) & (dist <= 1.5*sspot_size)
-            locs = np.where(cond)[0].tolist()
-            cnv = ads[sample][ads[sample].obs.index[[i] + locs]].to_df().T
-            weights = cnv.corr(method=sMED if method == 'MED' else method).iloc[0].iloc[1:].values
-            egdes.extend([(list(p), list(ep)) for ep in coords[locs]])
-            edgeweights.extend(weights)
+        
+        cacheName = f'{cacheDir}/{sample}_{method}_edges_cache.pklz'
+
+        if cacheEdges and os.path.isfile(cacheName):
+            # Load from cache
+            with open(cacheName, 'rb') as tempfile:
+                egdes, edgeweights = pickle.load(tempfile)
+        else:
+            egdes = []
+            edgeweights = []
+            for i, p in enumerate(coords):
+                dist = np.sqrt(((coords - p)**2).sum(axis=1))
+                cond = (dist > 0.5*sspot_size) & (dist <= 1.5*sspot_size)
+                locs = np.where(cond)[0].tolist()
+                cnv = ads[sample][ads[sample].obs.index[[i] + locs]].to_df().T
+                
+                if method == 'MED':
+                    weights = cnv.corr(method=sMED).iloc[0].iloc[1:].values
+                else:
+                    weights = 1 - cnv.corr(method=method).iloc[0].iloc[1:].values
+
+                egdes.extend([(list(p), list(ep)) for ep in coords[locs]])
+                edgeweights.extend(weights)
+
+            if cacheEdges:
+                if not os.path.exists(cacheDir):
+                    os.makedirs(cacheDir)
+
+                # Save to cache
+                with open(cacheName, 'wb') as tempfile:
+                    pickle.dump((egdes, edgeweights), tempfile, protocol=4)
 
         alphas = pd.Series(edgeweights)
         alphas -= alphas.min()
-        alphas /= alphas.quantile(alpha_quantile)
+        if absolute_cutoff is None:
+            q = alphas.quantile(alpha_quantile)
+        else:
+            q = absolute_cutoff
+
+        alphas /= q
         alphas[alphas > 1] = 1
         alphas = alphas.values**decay_power
 
         if invert:
             alphas = 1 - alphas
 
-        ax.add_collection(LineCollection(egdes, linewidths=linewidth_factor*alphas, colors='k', linestyle='solid', alpha=alphas, zorder=1000))
+        ax.add_collection(LineCollection(egdes, linewidths=linewidth_factor*alphas, colors='k', linestyle='solid', alpha=alphas))
 
         if not maintainScale:
             px = int(10**3*np.round((0.001*bsize/sf), 1))

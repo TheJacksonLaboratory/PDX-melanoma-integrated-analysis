@@ -494,3 +494,38 @@ def getGridVelocityForSourceSink(X_grid_full, V_grid_full, gridPhi, isSource=Tru
     V_grid_full_1D = V_grid_full_1D[wh, :]
     
     return X_grid_full_1D, V_grid_full_1D
+
+def remove_up_to(ins, n=50):
+    
+    s = ins.copy()
+    
+    t = s - np.roll(s.values, -1)
+    a = np.where(t[:-1]==1)[0]
+    b = a + 1
+    t = s - np.roll(s.values, 1)
+    a = np.where(t[:-1]==1)[0]
+    a = a[:len(b)]
+    b = b[:len(a)]
+    b -= a
+    
+    for i, l in np.vstack([a, b]).T:
+        if l<=n:
+            s[i: i+l] = 0
+
+    return s
+
+def filterCNV(df, n=50):
+
+    f = lambda s: remove_up_to(s, n)
+
+    df_pos = df.copy()
+    df_pos[df_pos < 0] = 0
+    df_pos = df_pos.apply(f, axis=0)
+
+    df_neg = df.copy()
+    df_neg[df_neg > 0] = 0
+    df_neg *= -1
+    df_neg = df_neg.apply(f, axis=0)
+    df_neg *= -1
+
+    return df_pos + df_neg

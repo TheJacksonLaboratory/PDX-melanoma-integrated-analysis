@@ -287,11 +287,17 @@ def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize =
         else:
             egdes = []
             edgeweights = []
+            identities = []
+            identitiesneigh = []
             for i, p in enumerate(coords):
                 dist = np.sqrt(((coords - p)**2).sum(axis=1))
                 cond = (dist > 0.5*sspot_size) & (dist <= 1.5*sspot_size)
                 locs = np.where(cond)[0].tolist()
                 cnv = ads[sample][ads[sample].obs.index[[i] + locs]].to_df().T
+
+                clusters = ads[sample].obs['cluster'][locs].values.tolist()
+                identities.extend(clusters)
+                identitiesneigh.extend(ads[sample].obs['cluster'][[i]].values.tolist() * len(clusters))
                 
                 if method == 'MED':
                     weights = cnv.corr(method=sMED).iloc[0].iloc[1:].values
@@ -308,6 +314,8 @@ def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize =
                 # Save to cache
                 with open(cacheName, 'wb') as tempfile:
                     pickle.dump((egdes, edgeweights), tempfile, protocol=4)
+
+        df_info = pd.concat([pd.Series(identities), pd.Series(identitiesneigh), pd.Series(edgeweights)], axis=1)
 
         alphas = pd.Series(edgeweights)
         alphas -= alphas.min()
@@ -348,4 +356,4 @@ def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize =
     fig.suptitle(identity if title is None else title, x=x, y=y, ha='left', size='x-large', weight='demi')
     plt.show()
 
-    return
+    return df_info

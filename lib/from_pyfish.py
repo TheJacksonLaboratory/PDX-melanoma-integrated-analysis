@@ -10,6 +10,44 @@ import pandas as pd
 from matplotlib import cm
 from scipy.ndimage import gaussian_filter
 
+
+def plotFishTV(obs, absolute=True, palette=None, identity='rna_cluster'):
+
+    palette.update({'-3':'white', '-2':'white', '-1':'white'})
+    
+    obs['T'] = obs['T'].replace({'TE': 'T-2', 'TC': 'T-1'})
+    root = -1
+    
+    obs = obs.loc[obs[identity]!='-1']
+    
+    u = sorted(obs[identity].unique().astype(int))
+    #parent_tree_df = pd.DataFrame([[root, v] for v in u], columns=["ParentId", "ChildId"])
+    parent_tree_df = pd.DataFrame([[-1, 0], [0, 1], [1, 2]], columns=["ParentId", "ChildId"])
+    #print(parent_tree_df)
+
+
+
+    obs['fID'] = obs[identity].astype(int).values
+
+    T_str_mapping = obs['T'].drop_duplicates()
+    T_str_mapping.index = T_str_mapping.str.split('T', expand=True)[1].astype(str)
+    T_str_mapping = T_str_mapping.to_dict()
+    T_str_mapping.update({'-2': 'T-2', '-1': 'T-1', '1': 'T1'})
+    #print(T_str_mapping)
+    
+    obs['fSTEP'] = obs['T'].astype(str).replace({v:k for k,v in T_str_mapping.items()}).astype(int).values
+    populations_df = obs.set_index(['fID', 'fSTEP'])[identity].groupby(level=[0, 1], axis=0).count().reset_index().rename({'fID': 'Id', 'fSTEP': 'Step', identity: 'Pop'}, axis=1)
+    populations_df.loc[root] = root, root+1, 1
+
+    #print(populations_df)
+
+    
+    setup_figure(width=512, height=512, absolute=absolute)
+    #plt.title(f'Title', fontsize=30)
+    data = process_data(populations_df, parent_tree_df, absolute=absolute, seed=0, color_by=None, colorDict=palette)
+    fish_plot(*data, xticksMapping=T_str_mapping)
+    return
+
 def plotFishCustom(obs, modality='RNA', absolute=True, palette=None):
 
     palette.update({'-3':'white', '-2':'white', '-1':'white'})
@@ -41,7 +79,7 @@ def plotFishCustom(obs, modality='RNA', absolute=True, palette=None):
     populations_df.loc[root] = root, root+1, 1
     
     setup_figure(width=512, height=256, absolute=absolute)
-    plt.title(f'{modality} clusters', fontsize=30)
+    #plt.title(f'{modality} clusters', fontsize=30)
     data = process_data(populations_df, parent_tree_df, absolute=absolute, seed=0, color_by=None, colorDict=palette)
     fish_plot(*data, xticksMapping=T_str_mapping)
     return
@@ -113,8 +151,7 @@ def _build_tree(parent_df):
     root_id = root_list[0]
     ids = np.concatenate([[root_id], children])
 
-    tree = {cid: list(children) for cid in ids if len(
-        children := parent_df.loc[parent_df["ParentId"] == cid, "ChildId"]) > 0}
+    tree = {cid: list(children) for cid in ids if len(children := parent_df.loc[parent_df["ParentId"] == cid, "ChildId"]) > 0}
     if -1 not in tree:
         tree[-1] = [root_id]
 
@@ -220,7 +257,7 @@ def setup_figure(width=1920, height=1080, absolute=False, axisLabelFontsize=28, 
     dpi = (width + height) // 20
     plt.figure(figsize=(width // dpi, height // dpi), dpi=dpi)
     plt.xlabel(xlabel, fontsize=axisLabelFontsize)
-    plt.ylabel('Population size' if absolute else 'Proportion', fontsize=axisLabelFontsize)
+    plt.ylabel('Number of spots' if absolute else 'Proportion', fontsize=axisLabelFontsize)
     plt.tick_params(axis='both', labelsize=tickLabelFontsize)
     return
 
@@ -281,7 +318,7 @@ def _create_colors(ids, root_id, ordering, seed, cmap_name, pops_df, color_by=No
             raise ValueError
         
         colors = pd.DataFrame([matplotlib.colors.to_rgba(colorDict[str(id)]) for id in ids], index=ids)
-        colors.loc[root_id] = .5 * np.ones(4)
+        colors.loc[root_id] = 1. * np.ones(4) # 0.5 * np.ones(4)
 
     colors = colors.loc[ordering].values
 

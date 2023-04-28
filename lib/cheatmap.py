@@ -34,7 +34,7 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
           addGeneLabels=False, fontsizeGeneLabels=12, saveFig=False, borderWidth=0.005, groupWidth=0.0375, dendrogramLineWidth=2.0, dendrogramLineColor='#555555', safetyLimit=1000,
           addLinesOnHeatmap=True, addLinesOnGroups=True, vmin=None, vmax=None, returnDistancesOnly=False, bootstrapObs=False, bootstrapNum=100,
           linkageMethod='ward', keepOriginalOrderObs=False, linkageMetric='euclidean', # 'correlation', 'cosine', 'euclidean'
-          useMEDforObs=False, optimalOrderingForObs=False, useMEDforObsGroups=False, sampleMED=50,
+          useMEDforObs=False, optimalOrderingForObs=False, useMEDforObsGroups=False, sampleMED=50, groupfontsize=10,
           clusterObsByGroups=True, reference=dict(), referenceLabel='Reference', colorbarLabels=None, colorbarLabel='Gene Expression', figureName='figure.png', dpi=600):
     
     # colorbarLabels: ['High', 'Low'], ['Ampl.', 'Del.'], None
@@ -321,7 +321,7 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
                 ax.axhline(pos, color='k', linestyle='-', linewidth=1.0, clip_on=False)
            
         for igroup, group in enumerate(df_groups.columns):
-            ax.text(igroup + 0.5, -0.01*max(ax.get_ylim()), group.title(), ha='center', va='top', fontsize=14)
+            ax.text(igroup + 0.5, -0.01*max(ax.get_ylim()), group.title(), ha='center', va='top', fontsize=groupfontsize)
             
         ax.set(xticks=[], yticks=[], xticklabels=[], yticklabels=[], ylim=(0, len(df_groups_c)))
  
@@ -376,11 +376,11 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
             dnames = pd.DataFrame(pd.concat([df_groups_c[group], df_groups[group]], axis=1).drop_duplicates().values).set_index(0)[1].to_dict()
             for ientry, entry in enumerate(dfl[group]):
                 if entry in dnames.keys():
-                    ltext = ax.text(igroup + 0.5, ientry + 0.5, dnames[entry], ha='center', va='center', fontsize=12) # 12
+                    ltext = ax.text(igroup + 0.5, ientry + 0.5, dnames[entry], ha='center', va='center', fontsize=groupfontsize)
                     ltext.set_path_effects([path_effects.Stroke(linewidth=3., foreground='w'), path_effects.Normal()])
              
         for igroup, group in enumerate(df_groups.columns):
-            ax.text(igroup + 0.5, -1.25 + 0.5, group.title(), ha='center', va='center', fontsize=14)
+            ax.text(igroup + 0.5, -1.25 + 0.5, group.title(), ha='center', va='center', fontsize=groupfontsize)
         
     # Add colorbar
     if True:

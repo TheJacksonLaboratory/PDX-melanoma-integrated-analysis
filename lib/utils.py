@@ -41,7 +41,7 @@ def scaleMH(ads, ids, total=2*10**4, L=5*10**4, figsize=(7,5), human_ratio=0.8, 
     print('Sample', '\t', 'Median (across spots) total mRNA, before scaling, human spots')
     for id in ids:
         ma = np.exp(ads[id][ads[id].obs['human_ratio']>=human_ratio, ads[id].var['is_human_gene'].values].to_df()).sub(1.).sum(axis=1).quantile(quantile)
-        ma = total if ma is np.nan else ma
+        ma = total if ma!=ma else ma
         ads[id].X = csr_matrix(np.log(((np.exp(ads[id].to_df()).sub(1.))*total/ma).add(1.)).values)
         print(id, '\t', np.round(ma, 0))
         
@@ -209,7 +209,7 @@ def loadCNVfromCaSpER(lohfile, cnvfile):
     print(df.shape, df_obs.shape)
     return df, df_obs
 
-def loadCNVfromInferCNV(metafile, files, discretize=True, delta=0.025):
+def loadCNVfromInferCNV(metafile, files, discretize=True, delta=0.025, reindexMeta=True):
     dfm = pd.read_csv(metafile, sep='\t', header=None)
     index = dfm[0].values
     dfm = dfm[1].str.split('.', expand=True)
@@ -223,8 +223,6 @@ def loadCNVfromInferCNV(metafile, files, discretize=True, delta=0.025):
     df = pd.concat([pd.read_csv(file, sep=' ', index_col=0) for file in files], axis=1)
     print(df.shape, dfm.shape)
     
-    dfm = dfm.loc[df.columns]
-    
     dfm.index.name = 'spot'
     df.columns.name = 'spot'
     
@@ -233,7 +231,10 @@ def loadCNVfromInferCNV(metafile, files, discretize=True, delta=0.025):
         df[df < 1+delta] = 0
         df[wh_neg] = -1
         df[df >= 1+delta] = 1
-        df = df.astype(int)  
+        df = df.astype(int)
+
+    if reindexMeta:
+        dfm = dfm.loc[df.columns]
 
     return df, dfm
 

@@ -70,9 +70,12 @@ def simpleCorrPlot(ida, idb, ax, ad_all, human_ratio=0.5, alpha=0.5):
 
     m = max(mh, mm)
 
-    ax.plot([0, m], [0, m], '--', c='k')
-    ax.set_xlim(0, m)
-    ax.set_ylim(0, m)
+    try:
+        ax.plot([0, m], [0, m], '--', c='k')
+        ax.set_xlim(0, m)
+        ax.set_ylim(0, m)
+    except:
+        pass
 
     ax.set_title(ida + '\n' + idb, fontsize=8)
 

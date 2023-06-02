@@ -21,7 +21,7 @@ palette1.update({'-1':'white', '9':'k'})
 
 
 palette_WM4007_rna = palette1.copy()
-palette_WM4007_rna.update({'4':cm.Set1(5), '7':'cyan', '3':cm.Set1(4), '2':cm.Set1(2), '8':cm.Set2(0), '0':cm.Set1(0), '5':cm.Set1(3), '6':cm.Set1(7), '1':cm.Set1(1), '9':'black'})
+palette_WM4007_rna.update({'4':cm.Set1(5), '7':'cyan', '3':cm.Set1(4), '2':cm.Set1(2), '8': 'black', '0':cm.Set1(0), '5':cm.Set1(3), '6':cm.Set1(7), '1':cm.Set1(1), '9':'gold'})
 
 palette_WM4237_rna = palette1.copy()
 palette_WM4237_rna.update({'7':cm.Set1(5), '3':'cyan', '4':cm.Set1(4), '8':cm.Set1(2), '0':cm.Set1(0), '6':cm.Set1(3), '5':cm.Set1(7), '1':cm.Set1(1), '2':'olive'})
@@ -32,7 +32,7 @@ def writePalette(palette, label='general'):
     palette1hex.to_csv(f'palette_{label}.csv', index=False)
     return palette1hex
 
-if False:
+if True:
     writePalette(palette_WM4237_rna, label='WM4237_rna')
     writePalette(palette_WM4007_rna, label='WM4007_rna')
     writePalette(palette1, label='general')

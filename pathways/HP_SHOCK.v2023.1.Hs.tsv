@@ -1,0 +1,19 @@
+STANDARD_NAME	HP_SHOCK
+SYSTEMATIC_NAME	M38451
+COLLECTION	C5:HPO
+MSIGDB_URL	https://www.gsea-msigdb.org/gsea/msigdb/human/geneset/HP_SHOCK
+NAMESPACE	Human_NCBI_Gene_ID
+DESCRIPTION_BRIEF	Shock
+DESCRIPTION_FULL	The state in which profound and widespread reduction of effective tissue perfusion leads first to reversible, and then if prolonged, to irreversible cellular injury. []
+PMID	
+GEOID	
+AUTHORS	
+CONTRIBUTOR	Human Phenotype Ontology Group
+CONTRIBUTOR_ORG	The Jackson Laboratory (JAX)
+EXACT_SOURCE	HP:0031273
+FILTERED_BY_SIMILARITY	
+EXTERNAL_NAMES_FOR_SIMILAR_TERMS	
+EXTERNAL_DETAILS_URL	https://hpo.jax.org/app/browse/term/HP:0031273
+SOURCE_MEMBERS	10345,1616,1832,368,3728,442721,4633,546,6123,6337,6338,6340,6389,8260
+GENE_SYMBOLS	TRDN,DAXX,DSP,ABCC6,JUP,LMOD2,MYL2,ATRX,RPL3L,SCNN1A,SCNN1B,SCNN1G,SDHA,NAA10
+FOUNDER_NAMES	

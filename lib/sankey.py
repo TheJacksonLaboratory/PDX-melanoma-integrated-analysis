@@ -6,6 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.offline import plot as plot_offline
 from plotly.offline import plot_mpl
+from matplotlib.colors import to_rgba
 # Image(url="%s.png" % nameAppend, width=400)
 
 def alignSeries(se1, se2, tagForMissing):
@@ -27,25 +28,30 @@ def getCountsDataframe(se1, se2, tagForMissing='N/A'):
 
 
 
-def makeSankeyDiagram(df, colormapForIndex = None, colormapForColumns = None, linksColor = 'rgba(100,100,100,0.6)', title = '', attemptSavingHTML = False, quality = 4,
+def makeSankeyDiagram(df, colormapForIndex = None, colormapForColumns = None, title = '', attemptSavingHTML = False, quality = 4,
+                      linksColor = 'rgba(100,100,100,0.6)', indexNodeColor='grey', columnsNodeColor='grey',
                       width = 400, height = 400, border = 20, nodeLabelsFontSize = 15, nameAppend = '_Sankey_diagram', saveDir=''):
 
-    try:
-        temp_index = pd.MultiIndex.from_arrays([df.index, [colormapForIndex[item] for item in df.index]], names=['label', 'color'])
-        temp_columns = pd.MultiIndex.from_arrays([df.columns, [colormapForColumns[item] for item in df.columns]], names=['label', 'color'])
-        df.index = temp_index
-        df.columns = temp_columns
-    except Exception as exception:
-        #print('Using default node colors')
-        colormapForIndex = None
-        colormapForColumns = None
+    def makeStrRGBA(t):
+        t = to_rgba(t)
+        return 'rgba(%s,%s,%s,%s)' % (int(255*t[0]), int(255*t[1]), int(255*t[2]), t[3])
 
-    if (colormapForIndex is None) or (colormapForColumns is None):
-        nodeColors = ['rgba(150,0,10,0.8)'] * len(df.index) + ['rgba(10,0,150,0.8)'] * len(df.columns)
-        nodeLabels = df.index.to_list() + df.columns.to_list()
-    else:
-        nodeLabels = df.index.get_level_values('label').to_list() + df.columns.get_level_values('label').to_list()
-        nodeColors = df.index.get_level_values('color').to_list() + df.columns.get_level_values('color').to_list()
+    try:
+        df.index = pd.MultiIndex.from_arrays([df.index, [makeStrRGBA(colormapForIndex[item]) for item in df.index]], names=['label', 'color'])
+    except Exception as exception:
+        print('Using default index nodes colors')
+        colormapForIndex = None
+        df.index = pd.MultiIndex.from_arrays([df.index, [makeStrRGBA(to_rgba(indexNodeColor))] * len(df.index)], names=['label', 'color'])
+
+    try:
+        df.columns = pd.MultiIndex.from_arrays([df.columns, [makeStrRGBA(colormapForColumns[item]) for item in df.columns]], names=['label', 'color'])
+    except Exception as exception:
+        print('Using default columns nodes colors')
+        colormapForColumns = None
+        df.columns = pd.MultiIndex.from_arrays([df.columns, [makeStrRGBA(to_rgba(columnsNodeColor))] * len(df.columns)], names=['label', 'color'])
+
+    nodeLabels = df.index.get_level_values('label').to_list() + df.columns.get_level_values('label').to_list()
+    nodeColors = df.index.get_level_values('color').to_list() + df.columns.get_level_values('color').to_list()
 
     sources, targets, values, labels = [], [], [], []
     for i, item in enumerate(df.index):
@@ -59,9 +65,19 @@ def makeSankeyDiagram(df, colormapForIndex = None, colormapForColumns = None, li
 
     colorscales = [dict(label=label, colorscale=[[0, linksColor], [1, linksColor]]) for label in labels]
 
+    print(makeStrRGBA(to_rgba('grey')))
+
     if not nodeColors is None:
         for i in range(len(sources)):
-            if nodeColors[sources[i]] == nodeColors[targets[i]]:
+            if (colormapForIndex is None) and (not colormapForColumns is None):
+                newColor = ','.join(nodeColors[targets[i]].split(',')[:3] + ['0.6)'])
+                colorscales[i] = dict(label=labels[i], colorscale=[[0, newColor], [1, newColor]])
+
+            elif (not colormapForIndex is None) and (colormapForColumns is None):
+                newColor = ','.join(nodeColors[sources[i]].split(',')[:3] + ['0.6)'])
+                colorscales[i] = dict(label=labels[i], colorscale=[[0, newColor], [1, newColor]])
+
+            elif nodeColors[sources[i]] == nodeColors[targets[i]]:
                 newColor = ','.join(nodeColors[sources[i]].split(',')[:3] + ['0.6)'])
                 colorscales[i] = dict(label=labels[i], colorscale=[[0, newColor], [1, newColor]])
 

@@ -169,7 +169,7 @@ def simpleCorrPlotAll(ida, idb, ax, ad_all):
 
 def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 5, fy=1.0, identity = None, palette = 'tab20', cmap = 'rainbow', title = None, no_legend=False,
                    spot_size = 425, fontsize = 8, markerscale = 1.25, wspace = 0.15, hspace = 0.2, img_key = 'lowres',  x = 0.12, y = 0.93, vmin=None, vmax=None, hide_zeros=False,
-                   maintainScale = False, uniformColorScale = True, trimImageToSpots=False, borderWidth=0.1, bsize = 100, alpha_spot = 1., alpha_img = 1.):
+                   maintainScale = False, uniformColorScale = True, trimImageToSpots=False, borderWidth=0.1, bsize = 100, alpha_spot = 1., alpha_img = 1., legend_frameon=True, suptitle=None):
 
     if identity is None:
         alpha_spot = 0
@@ -189,7 +189,7 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
             
     ny = int(np.ceil(n / nx))
 
-    fig, axs = plt.subplots(ny, nx, figsize=(f*panelSize*nx, fy*f*panelSize*ny))
+    fig, axs = plt.subplots(ny, nx, figsize=(f*panelSize*nx, fy*f*panelSize*ny)) # , dpi=75
     if nx==1 and ny==1:
         axs = np.array([axs])
 
@@ -215,7 +215,7 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
                 _vmin = ar[0].min()
             if vmax is None:
                 _vmax = ar[1].max()
-        except:
+        except Exception as exception:
             if vmin is None:
                 _vmin = 0
             if vmax is None:
@@ -277,14 +277,16 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
             crop_coord = [0, sizey/sf, 0, sizex/sf]
 
         ad_temp = ads[sample].copy()
-        if not identity in ad_temp.obs.columns:
-            ad_temp.obs[identity] = ad_temp[:, [identity]].to_df()[identity]
-            tg = ad_temp.var.index[:2]
-            ad_temp = ad_temp[:, [tg[0]] if tg[0]!=identity else [tg[1]]]
-            ad_temp.X = None
 
-        if hide_zeros:
-            ad_temp.obs[identity] = ad_temp.obs[identity].replace(0, np.nan)
+        if not identity is None:
+            if not identity in ad_temp.obs.columns:
+                ad_temp.obs[identity] = ad_temp[:, [identity]].to_df()[identity]
+                tg = ad_temp.var.index[:2]
+                ad_temp = ad_temp[:, [tg[0]] if tg[0]!=identity else [tg[1]]]
+                ad_temp.X = None
+
+            if hide_zeros:
+                ad_temp.obs[identity] = ad_temp.obs[identity].replace(0, np.nan)
 
         sc.pl.spatial(ad_temp, img_key=img_key, color=identity, palette=palette, title=sample.replace('_', ' '), 
                         spot_size=spot_size, alpha=alpha_spot, alpha_img=alpha_img, show=False, ax=ax, crop_coord=crop_coord, legend_loc='on data 2',
@@ -304,7 +306,7 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
                         ax.scatter([], [], color=color, label=label)
 
                     if not no_legend:
-                        ax.legend(frameon=True, loc='upper left', fontsize=fontsize, markerscale=markerscale, fancybox=True, shadow=False, framealpha=0.65)
+                        ax.legend(frameon=legend_frameon, loc='upper left', fontsize=fontsize, markerscale=markerscale, fancybox=True, shadow=False, framealpha=0.65)
 
     for iext in range(isample+1, nx*ny):
         i, j = int((iext - iext%nx)/nx), iext%nx
@@ -312,7 +314,8 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
 
     plt.subplots_adjust(wspace=wspace, hspace=hspace)
 
-    fig.suptitle(identity if title is None else title, x=x, y=y, ha='left', size='x-large', weight='demi')
+    if suptitle is None:
+        fig.suptitle(identity if title is None else title, x=x, y=y, ha='left', size='x-large', weight='demi')
 
     return
 

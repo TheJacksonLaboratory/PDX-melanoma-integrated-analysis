@@ -1,0 +1,19 @@
+STANDARD_NAME	BIOCARTA_STRESS_PATHWAY
+SYSTEMATIC_NAME	M9670
+COLLECTION	C2:CP:BIOCARTA
+MSIGDB_URL	https://www.gsea-msigdb.org/gsea/msigdb/human/geneset/BIOCARTA_STRESS_PATHWAY
+NAMESPACE	Human_RefSeq
+DESCRIPTION_BRIEF	TNF/Stress Related Signaling
+DESCRIPTION_FULL	TNF acts on several different signaling pathways through two cell surface receptors, TNFR1 and TNFR2 to regulate apoptotic pathways, NF-kB activation of inflammation, and activate stress-activated protein kinases (SAPKs). Interaction of TNFR1 with TRADD leads to activation of NF-kB and apoptosis pathways, while interaction with TRAF2 has generally been thought to be involved in stress kinase and NF-kB activation but is not required for TNF to induce apoptosis. Activation of NF-kB is mediated by TRAF2 through the NIK kinase and also by RIP but the observation that TNF activates NF-kB in mice lacking TRAF2 indicates that TRAF-2 does not play an essential role in this process. Stress-activated protein kinases, also called JNKs, are a family of map kinases activated by cellular stress and inflammatory signals. Binding of TNF to the TNFR1 receptor activates the germinal center kinase (GCK) through the TNF adaptor Traf2, activating the map kinase MEKK1. Both GCK and MEKK1 interact with Traf2, and GCK is required for MEKK1 activation by TNF, but GCK kinase activity does not appear to be required for MEKK1 activation. Instead, GCK activates MEKK1 by causing MEKK1 oligomerization and autophosphorylation. Tank increases the affinity of Traf2 for GCK to increase Map kinase activation by TNF. Once activated, MEKK1 stands at the top of a map kinase pathways leading to transcriptional regulation, including JNK phosphorylation of c-Jun to stimulate transcriptional activation by AP-1, a heterodimer of c-jun and fos or ATF proteins. The activation of the p38 Map kinase also contributes to AP-1 activation leading to the transcriptional activation of many stress and growth related genes. RIP has been suggested as a component of the p38 pathway in addition to playing a role in NF-kB activation. MEKK1 knockout mice support the role of MEKK1 in JNK activation in some cells but did not support MEKK1 dependent activation of NF-kB. Alternative redundant mechanisms may obscure the role of MEKK1 in NF-kB mechanisms. TNF activation of stress kinase pathways and downstream transcription factors may help to modulate the apoptotic pathways also activated by TNF.
+PMID	
+GEOID	
+AUTHORS	
+CONTRIBUTOR	BioCarta
+CONTRIBUTOR_ORG	BioCarta
+EXACT_SOURCE	
+FILTERED_BY_SIMILARITY	
+EXTERNAL_NAMES_FOR_SIMILAR_TERMS	
+EXTERNAL_DETAILS_URL	https://data.broadinstitute.org/gsea-msigdb/msigdb/biocarta/human/h_stressPathway.gif
+SOURCE_MEMBERS	BM458535,NM_000594,NM_001065,NM_001099856,NM_001099857,NM_001145138,NM_001145255,NM_001165412,NM_001190720,NM_001199135,NM_001224,NM_001242778,NM_001243984,NM_001243985,NM_001278,NM_001315,NM_001556,NM_002228,NM_002750,NM_002756,NM_002758,NM_003010,NM_003639,NM_003789,NM_003804,NM_003805,NM_003954,NM_003998,NM_004180,NM_004579,NM_005171,NM_005921,NM_020529,NM_021138,NM_021975,NM_032982,NM_032983,NM_133484,NM_139012,NM_139013,NM_139014,NM_139046,NM_139047,NM_139049,NM_145109
+GENE_SYMBOLS	,TNF,TNFRSF1A,IKBKG,IKBKG,RELA,IKBKG,NFKB1,IKBKB,TANK,CASP2,IKBKB,RELA,RELA,CHUK,MAPK14,IKBKB,JUN,MAPK8,MAP2K3,MAP2K6,MAP2K4,IKBKG,TRADD,RIPK1,CRADD,MAP3K14,NFKB1,TANK,MAP4K2,ATF1,MAP3K1,NFKBIA,TRAF2,RELA,CASP2,CASP2,TANK,MAPK14,MAPK14,MAPK14,MAPK8,,MAPK8,MAP2K3
+FOUNDER_NAMES	

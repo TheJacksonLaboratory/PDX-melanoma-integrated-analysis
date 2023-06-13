@@ -5,8 +5,15 @@ import pandas as pd
 genesDicts = dict()
 loadPathwayRGD = lambda name: np.sort(pd.read_csv(name, delimiter='\t', index_col=0)['Symbol'].values.tolist())
 loadPathway = lambda name: np.sort(pd.read_csv(name, delimiter='\t', index_col=0).loc['MAPPED_SYMBOLS'].values).tolist()[0].split(',')
+loadPathway23 = lambda name: np.sort(pd.read_csv(name, delimiter='\t', index_col=0).loc['GENE_SYMBOLS'].values).tolist()[0].split(',')
 
 filesPath = 'c:/Projects/A_ST/github-pipelines/PDX-melanoma-integrated-analysis/pathways/'
+
+genesDicts.update({'SHOCK': loadPathway23(filesPath + 'HP_SHOCK.v2023.1.Hs.tsv')})
+genesDicts.update({'STRESS': loadPathway23(filesPath + 'BIOCARTA_STRESS_PATHWAY.v2023.1.Hs.tsv')})
+genesDicts.update({'STRESS_RESPONSE': loadPathway23(filesPath + 'RESPONSE_TO_STRESS.v2023.1.Hs.tsv')})
+genesDicts.update({'CHOLESTEROL_METABOLISM': loadPathway23(filesPath + 'WP_CHOLESTEROL_METABOLISM.v2023.1.Hs.tsv')})
+genesDicts.update({'CHOLESTEROL_BIOSYNTHESIS': loadPathway23(filesPath + 'REACTOME_CHOLESTEROL_BIOSYNTHESIS.v2023.1.Hs.tsv')})
 
 genesDicts.update({'PKA': loadPathwayRGD(filesPath + 'annotation PKA.tab')})
 
@@ -45,10 +52,14 @@ genesDicts.update({'REACTOME_FATTY_ACID': loadPathway(filesPath + 'REACTOME_FATT
 genesDicts.update({'Reactome-FAO': loadPathway(filesPath + 'REACTOME_MITOCHONDRIAL_FATTY_ACID_BETA_OXIDATION.v7.5.1.tsv')})
 genesDicts.update({'OXPHOS': loadPathway(filesPath + 'WP_ELECTRON_TRANSPORT_CHAIN_OXPHOS_SYSTEM_IN_MITOCHONDRIA.v7.5.1.tsv')})
 genesDicts.update({'FAK': loadPathway(filesPath + 'PID_FAK_PATHWAY.v7.5.1.tsv')})
-genesDicts.update({'HEAT': loadPathway(filesPath + 'REACTOME_CELLULAR_RESPONSE_TO_HEAT_STRESS.v7.5.1.tsv')})
+genesDicts.update({'RESPONSE_TO_HEAT_STRESS': loadPathway(filesPath + 'REACTOME_CELLULAR_RESPONSE_TO_HEAT_STRESS.v7.5.1.tsv')})
 genesDicts.update({'NEURAL_CREST': loadPathway(filesPath + 'WP_NEURAL_CREST_DIFFERENTIATION.v7.5.1.tsv')})
 genesDicts.update({'KEGG_LYSOSOME': loadPathway(filesPath + 'KEGG_LYSOSOME.v2022.1.Hs.tsv')})
 genesDicts.update({'HALLMARK_APOPTOSIS': loadPathway(filesPath + 'HALLMARK_APOPTOSIS.v2022.1.Hs.tsv')})
+
+
+
+
 
 
 genesDicts.update({'G1_S_CELL_CYCLE': loadPathway(filesPath + 'FISCHER_G1_S_CELL_CYCLE.v7.5.1.tsv')})
@@ -97,3 +108,6 @@ genesDicts.update({'ISG3': ['STAT1','IRF3','STAT3','STAT6','STAT2','IRF9','NFKB1
 # GABPA is NRF2
 
 genesDicts.update({'RIBOSOMAL': pd.read_csv(filesPath + 'ribosomal_genes_hugo.txt', delimiter='\t', index_col='Approved symbol').index.unique().values.tolist()})
+genesDicts.update({'DUSP': pd.read_csv(filesPath + 'DUSP.txt', delimiter='\t', index_col='Approved symbol').index.unique().values.tolist()})
+genesDicts.update({'HEAT_SHOCK_PROTEINS': pd.read_csv(filesPath + 'heat_shock_proteins_hgnc.txt', delimiter='\t', index_col='Approved symbol').index.unique().values.tolist()})
+

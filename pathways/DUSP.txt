@@ -1,0 +1,46 @@
+HGNC ID	Approved symbol	Approved name	Status	Locus type	Previous symbols	Alias symbols	Chromosome	NCBI Gene ID	Ensembl gene ID	Vega gene ID	Group ID	Group name
+HGNC:3066	DUSP11	dual specificity phosphatase 11	Approved	gene with protein product		PIR1	2p13.1	8446	ENSG00000144048	OTTHUMG00000129816	896	Atypical dual specificity phosphatases
+HGNC:3067	DUSP12	dual specificity phosphatase 12	Approved	gene with protein product		YVH1, DUSP1	1q23.3	11266	ENSG00000081721	OTTHUMG00000034540	896	Atypical dual specificity phosphatases
+HGNC:56772	DUSP13A	dual specificity phosphatase 13A	Approved	gene with protein product		MDSP, BEDP	10q22.2	128854680			896	Atypical dual specificity phosphatases
+HGNC:19681	DUSP13B	dual specificity phosphatase 13B	Approved	gene with protein product	DUSP13	TMDP, SKRP4	10q22.2	51207	ENSG00000079393	OTTHUMG00000018516	896	Atypical dual specificity phosphatases
+HGNC:17007	DUSP14	dual specificity phosphatase 14	Approved	gene with protein product		MKP-L, MKP6	17q12	11072	ENSG00000276023	OTTHUMG00000188472	896	Atypical dual specificity phosphatases
+HGNC:16236	DUSP15	dual specificity phosphatase 15	Approved	gene with protein product	C20orf57	bA243J16.6, VHY, FLJ20645, bA243J16.5	20q11.21	128853	ENSG00000149599	OTTHUMG00000032182	896	Atypical dual specificity phosphatases
+HGNC:18484	DUSP18	dual specificity phosphatase 18	Approved	gene with protein product		DUSP20	22q12.2	150290	ENSG00000167065	OTTHUMG00000151115	896	Atypical dual specificity phosphatases
+HGNC:18894	DUSP19	dual specificity phosphatase 19	Approved	gene with protein product		SKRP1, DUSP17	2q32.1	142679	ENSG00000162999	OTTHUMG00000132622	896	Atypical dual specificity phosphatases
+HGNC:20476	DUSP21	dual specificity phosphatase 21	Approved	gene with protein product			Xp11.3	63904	ENSG00000189037	OTTHUMG00000021401	896	Atypical dual specificity phosphatases
+HGNC:16077	DUSP22	dual specificity phosphatase 22	Approved	gene with protein product		MKPX, JSP1, JKAP, VHX	6p25.3	56940	ENSG00000112679	OTTHUMG00000014113	896	Atypical dual specificity phosphatases
+HGNC:21480	DUSP23	dual specificity phosphatase 23	Approved	gene with protein product		FLJ20442, DUSP25	1q23.2	54935	ENSG00000158716	OTTHUMG00000022795	896	Atypical dual specificity phosphatases
+HGNC:28161	DUSP26	dual specificity phosphatase 26	Approved	gene with protein product		MGC1136, DUSP24, NEAP	8p12	78986	ENSG00000133878	OTTHUMG00000163961	896	Atypical dual specificity phosphatases
+HGNC:33237	DUSP28	dual specificity phosphatase 28	Approved	gene with protein product		VHP, DUSP26	2q37.3	285193	ENSG00000188542	OTTHUMG00000152310	896	Atypical dual specificity phosphatases
+HGNC:23481	DUSP29	dual specificity phosphatase 29	Approved	gene with protein product	DUPD1	DUSP27	10q22.2	338599	ENSG00000188716	OTTHUMG00000018512	896	Atypical dual specificity phosphatases
+HGNC:3069	DUSP3	dual specificity phosphatase 3	Approved	gene with protein product	VHR		17q21.31	1845	ENSG00000108861	OTTHUMG00000180889	896	Atypical dual specificity phosphatases
+HGNC:3413	EPM2A	EPM2A glucan phosphatase, laforin	Approved	gene with protein product		LDE, LD	6q24.3	7957	ENSG00000112425	OTTHUMG00000015747	896	Atypical dual specificity phosphatases
+HGNC:26965	PTPMT1	protein tyrosine phosphatase mitochondrial 1	Approved	gene with protein product		PLIP, DUSP23, MOSP	11p11.2	114971	ENSG00000110536	OTTHUMG00000166892	896	Atypical dual specificity phosphatases
+HGNC:10073	RNGTT	RNA guanylyltransferase and 5'-phosphatase	Approved	gene with protein product		HCE, HCE1, hCAP	6q15	8732	ENSG00000111880	OTTHUMG00000015190	896	Atypical dual specificity phosphatases
+HGNC:11447	STYX	serine/threonine/tyrosine interacting protein	Approved	gene with protein product			14q22.1	6815	ENSG00000198252	OTTHUMG00000140306	896	Atypical dual specificity phosphatases
+HGNC:1718	CDC14A	cell division cycle 14A	Approved	gene with protein product	DFNB32	Cdc14A1, Cdc14A2, cdc14, DFNB105	1p21.2	8556	ENSG00000079335	OTTHUMG00000010987	900	CDC14 phosphatases
+HGNC:1719	CDC14B	cell division cycle 14B	Approved	gene with protein product		Cdc14B1, Cdc14B2, CDC14B3, hCDC14B	9q22.32-q22.33	8555	ENSG00000081377	OTTHUMG00000020300	900	CDC14 phosphatases
+HGNC:1791	CDKN3	cyclin dependent kinase inhibitor 3	Approved	gene with protein product		KAP, CDI1	14q22.2	1033	ENSG00000100526	OTTHUMG00000140302	900	CDC14 phosphatases
+HGNC:30184	PTPDC1	protein tyrosine phosphatase domain containing 1	Approved	gene with protein product		PTP9Q22, FLJ37312	9q22.32	138639	ENSG00000158079	OTTHUMG00000020258	900	CDC14 phosphatases
+HGNC:3064	DUSP1	dual specificity phosphatase 1	Approved	gene with protein product	PTPN10	HVH1, CL100, MKP-1	5q35.1	1843	ENSG00000120129	OTTHUMG00000130523	895	MAP kinase phosphatases
+HGNC:3065	DUSP10	dual specificity phosphatase 10	Approved	gene with protein product		MKP-5, MKP5	1q41	11221	ENSG00000143507	OTTHUMG00000037269	895	MAP kinase phosphatases
+HGNC:17909	DUSP16	dual specificity phosphatase 16	Approved	gene with protein product		MKP-7, KIAA1700, MKP7	12p13.2	80824	ENSG00000111266	OTTHUMG00000168582	895	MAP kinase phosphatases
+HGNC:3068	DUSP2	dual specificity phosphatase 2	Approved	gene with protein product		PAC-1	2q11.2	1844	ENSG00000158050	OTTHUMG00000130456	895	MAP kinase phosphatases
+HGNC:3070	DUSP4	dual specificity phosphatase 4	Approved	gene with protein product		HVH2, MKP-2, TYP	8p12	1846	ENSG00000120875	OTTHUMG00000133395	895	MAP kinase phosphatases
+HGNC:3071	DUSP5	dual specificity phosphatase 5	Approved	gene with protein product		HVH3	10q25.2	1847	ENSG00000138166	OTTHUMG00000019040	895	MAP kinase phosphatases
+HGNC:3072	DUSP6	dual specificity phosphatase 6	Approved	gene with protein product		MKP-3, PYST1	12q21.33	1848	ENSG00000139318	OTTHUMG00000169912	895	MAP kinase phosphatases
+HGNC:3073	DUSP7	dual specificity phosphatase 7	Approved	gene with protein product		MKP-X, PYST2	3p21.2	1849	ENSG00000164086	OTTHUMG00000157819	895	MAP kinase phosphatases
+HGNC:3074	DUSP8	dual specificity phosphatase 8	Approved	gene with protein product	C11orf81	HVH-5, HB5, FLJ42958	11p15.5	1850	ENSG00000184545	OTTHUMG00000133348	895	MAP kinase phosphatases
+HGNC:3076	DUSP9	dual specificity phosphatase 9	Approved	gene with protein product		MKP-4, MKP4	Xq28	1852	ENSG00000130829	OTTHUMG00000024211	895	MAP kinase phosphatases
+HGNC:18165	STYXL1	serine/threonine/tyrosine interacting like 1	Approved	gene with protein product	DUSP24	MK-STYX	7q11.23	51657	ENSG00000127952	OTTHUMG00000130459	895	MAP kinase phosphatases
+HGNC:9634	PTP4A1	protein tyrosine phosphatase 4A1	Approved	gene with protein product		PTPCAAX1, PRL-1, PRL1	6q12	7803	ENSG00000112245	OTTHUMG00000014949	899	Protein tyrosine phosphatase 4A family
+HGNC:9635	PTP4A2	protein tyrosine phosphatase 4A2	Approved	gene with protein product	PTP4A	HU-PP-1, PTPCAAX2, OV-1, ptp-IV1a, PRL-2, PRL2	1p35.2	8073	ENSG00000184007	OTTHUMG00000003801	899	Protein tyrosine phosphatase 4A family
+HGNC:9636	PTP4A3	protein tyrosine phosphatase 4A3	Approved	gene with protein product		PRL-3, PRL-R, PRL3	8q24.3	11156	ENSG00000184489	OTTHUMG00000164490	899	Protein tyrosine phosphatase 4A family
+HGNC:9588	PTEN	phosphatase and tensin homolog	Approved	gene with protein product	BZS, MHAM	MMAC1, TEP1, PTEN1	10q23.31	5728	ENSG00000171862	OTTHUMG00000018688	902	PTEN protein phosphatases
+HGNC:11973	TNS1	tensin 1	Approved	gene with protein product	TNS, MXRA6	DKFZp586K0617, PPP1R155	2q35	7145	ENSG00000079308	OTTHUMG00000133056	902	PTEN protein phosphatases
+HGNC:19737	TNS2	tensin 2	Approved	gene with protein product	TENC1	KIAA1075, C1-TEN	12q13.13	23371	ENSG00000111077	OTTHUMG00000169730	902	PTEN protein phosphatases
+HGNC:12023	TPTE	transmembrane phosphatase with tensin homology	Approved	gene with protein product		PTEN2, CT44, TPTE1	21p11.2	7179	ENSG00000274391	OTTHUMG00000074127	902	PTEN protein phosphatases
+HGNC:17299	TPTE2	transmembrane phosphoinositide 3-phosphatase and tensin homolog 2	Approved	gene with protein product		TPIP	13q12.11	93492	ENSG00000132958	OTTHUMG00000016493	902	PTEN protein phosphatases
+HGNC:30579	SSH1	slingshot protein phosphatase 1	Approved	gene with protein product		KIAA1298, SSH1L	12q24.11	54434	ENSG00000084112	OTTHUMG00000169371	898	Slingshot protein phosphatases
+HGNC:30580	SSH2	slingshot protein phosphatase 2	Approved	gene with protein product		KIAA1725	17q11.2	85464	ENSG00000141298	OTTHUMG00000132752	898	Slingshot protein phosphatases
+HGNC:30581	SSH3	slingshot protein phosphatase 3	Approved	gene with protein product		FLJ20515, FLJ10928	11q13.2	54961	ENSG00000172830	OTTHUMG00000167105	898	Slingshot protein phosphatases

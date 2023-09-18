@@ -63,4 +63,4 @@ def DEGonAnnData(ad_sel, identity='all_clusters_0.65', minPct=0.05, minCells=10,
     df_for_metascape.columns = ['%s' % col for col in df_for_metascape.columns]
     df_for_metascape.to_csv('df_for_metascape_%s.csv' % nameAppend, index=False)
     
-    return
+    return all_DEGs

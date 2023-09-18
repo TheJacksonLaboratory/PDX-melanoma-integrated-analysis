@@ -14,6 +14,17 @@ genesDicts.update({'STRESS': loadPathway23(filesPath + 'BIOCARTA_STRESS_PATHWAY.
 genesDicts.update({'STRESS_RESPONSE': loadPathway23(filesPath + 'RESPONSE_TO_STRESS.v2023.1.Hs.tsv')})
 genesDicts.update({'CHOLESTEROL_METABOLISM': loadPathway23(filesPath + 'WP_CHOLESTEROL_METABOLISM.v2023.1.Hs.tsv')})
 genesDicts.update({'CHOLESTEROL_BIOSYNTHESIS': loadPathway23(filesPath + 'REACTOME_CHOLESTEROL_BIOSYNTHESIS.v2023.1.Hs.tsv')})
+genesDicts.update({'REGULATION_WNT_PATHWAY': loadPathway23(filesPath + 'GOBP_REGULATION_OF_WNT_SIGNALING_PATHWAY.v2023.1.Hs.tsv')})
+genesDicts.update({'ECM_ORGANIZATION': loadPathway23(filesPath + 'GOBP_REGULATION_OF_EXTRACELLULAR_MATRIX_ORGANIZATION.v2023.1.Hs.tsv')})
+genesDicts.update({'INTERFERON_ALPHA_BETA': loadPathway23(filesPath + 'REACTOME_INTERFERON_ALPHA_BETA_SIGNALING.v2023.1.Hs.tsv')})
+genesDicts.update({'CELL_CYCLE': loadPathway23(filesPath + 'REACTOME_CELL_CYCLE.v2023.1.Hs.tsv')})
+genesDicts.update({'CELL_CYCLE_CHECKPOINT': loadPathway23(filesPath + 'GOBP_CELL_CYCLE_CHECKPOINT_SIGNALING.v2023.1.Hs.tsv')})
+genesDicts.update({'POS_REG_CELL_CYCLE': loadPathway23(filesPath + 'GOBP_POSITIVE_REGULATION_OF_CELL_CYCLE.v2023.1.Hs.tsv')})
+genesDicts.update({'APOPTOTIC_SIGNALING': loadPathway23(filesPath + 'GOBP_REGULATION_OF_APOPTOTIC_SIGNALING_PATHWAY.v2023.1.Hs.tsv')})
+
+
+genesDicts.update({'PID_AP1_PATHWAY': loadPathway23(filesPath + 'PID_AP1_PATHWAY.v2023.1.Hs.tsv')})
+
 
 genesDicts.update({'PKA': loadPathwayRGD(filesPath + 'annotation PKA.tab')})
 

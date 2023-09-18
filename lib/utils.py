@@ -9,6 +9,8 @@ from scipy.sparse import csr_matrix
 import matplotlib.pyplot as plt
 import matplotlib.colors
 
+import scvelo as scv
+
 from scvelo.plotting.velocity_embedding_grid import compute_velocity_on_grid
 from skimage.draw import rectangle_perimeter, circle_perimeter, rectangle, disk
 from skimage.util import unique_rows
@@ -237,6 +239,44 @@ def loadCNVfromInferCNV(metafile, files, discretize=True, delta=0.025, reindexMe
         dfm = dfm.loc[df.columns]
 
     return df, dfm
+
+def loadAddLayersVelocytoData(ids=[], ads=[], dataPath='', identity='', tfactor=20000., layers=['spliced', 'unspliced', 'ambiguous'], initialLibrarySizes=None):
+
+    '''Modifies ads in place'''
+    
+    als = dict()
+    for id in ids:
+        if not id in als.keys():
+            try:
+                al_temp = sc.read_loom(f'{dataPath}/{id}/human/velocyto.loom')
+                al_temp.var_names_make_unique()
+                als.update({id: al_temp})
+                print('Loaded %s' % id)
+            except Exception as exception:
+                print(id, exception)
+                
+    for id in ids:
+        if id in als.keys():
+            ads[id].obs['velocyto_id'] = 'sample:' + ads[id].obs.index.str.split('-', expand=True).get_level_values(0) + 'x'
+            try:
+                for layer in layers:
+                    ads[id].layers[layer] = csr_matrix(pd.DataFrame(index=als[id].obs.index, 
+                                                                    data=als[id].layers[layer].todense(), 
+                                                                    columns=als[id].var.index).reindex(ads[id].obs['velocyto_id'].values).T.reindex(ads[id].var.index).fillna(0).astype(int).T)
+                    ads[id].layers[layer] = ads[id].layers[layer]*initialLibrarySizes[id] / tfactor
+                    
+                scv.pl.proportions(ads[id], groupby=identity, layers=layers)
+            except Exception as exception:
+                print(id, exception)   
+                
+    for id in ids:
+        print('Normalized %s' % id)
+        ad_temp = ads[id].copy()
+        scv.pp.normalize_per_cell(ad_temp, enforce=True)
+        for layer in layers:
+            ads[id].layers[layer] = ad_temp.layers[layer].copy()
+        
+    return
 
 def exportClustersForQuPath(sample, samplePathNF2, thumbsDir, obs, palette, useROIfile=False):
     dims_json_name = [name for name in os.listdir(thumbsDir) if ('.json' in name) and (sample in name.replace(' ', '_')) and ('dimensions' in name)][0]

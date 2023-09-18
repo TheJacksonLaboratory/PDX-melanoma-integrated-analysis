@@ -15,6 +15,9 @@ import scipy.stats
 
 from numba import jit
 
+from utils import computFullGridVelocity, getGridPhi, getGridVelocityForSourceSink, getFiOfEmb
+import scvelo as scv
+
 @jit
 def sMED(v1, v2):
 
@@ -80,6 +83,25 @@ def plotPhiHeatmap(gridPhi, X_grid_full, emb='emb', figsize=(5, 4), percentile=9
     plt.colorbar(mappable=im, ax=ax)
 
     return fig
+
+def plotFiForAd(ad, size=45, identity=None, palette=None):
+    X_grid_full, V_grid_full, X_emb = computFullGridVelocity(ad, emb='umap')
+    gridPhi = getGridPhi(X_grid_full, V_grid_full, R=3)
+    plotPhiHeatmap(gridPhi, X_grid_full, emb='umap', aspect=1);
+    
+    params = dict(basis='X_umap', density=1, arrow_size=4, arrow_length=1, color=identity, palette=palette, size=size, alpha=0.75, legend_loc='none')
+
+    X_source, V_source = getGridVelocityForSourceSink(X_grid_full, V_grid_full, gridPhi, isSource=True)
+    scv.pl.velocity_embedding_grid(ad, X_grid=X_source, V_grid=V_source, title='Source', **params)
+    
+    X_sink, V_sink = getGridVelocityForSourceSink(X_grid_full, V_grid_full, gridPhi, isSource=False)
+    scv.pl.velocity_embedding_grid(ad, X_grid=X_sink, V_grid=V_sink, title='Sink', **params)
+
+    Fi_emb = getFiOfEmb(X_grid_full, gridPhi, X_emb)
+    ad.obs['Fi_umap'] = Fi_emb
+    sc.pl.umap(ad, color='Fi_umap', cmap='bwr')
+    sc.pl.violin(ad, keys='Fi_umap', groupby=identity)
+    return
 
 def simpleCorrPlot(ida, idb, ax, ad_all, human_ratio=0.5, alpha=0.5):
 
@@ -169,7 +191,8 @@ def simpleCorrPlotAll(ida, idb, ax, ad_all):
 
 def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 5, fy=1.0, identity = None, palette = 'tab20', cmap = 'rainbow', title = None, no_legend=False,
                    spot_size = 425, fontsize = 8, markerscale = 1.25, wspace = 0.15, hspace = 0.2, img_key = 'lowres',  x = 0.12, y = 0.93, vmin=None, vmax=None, hide_zeros=False,
-                   maintainScale = False, uniformColorScale = True, trimImageToSpots=False, borderWidth=0.1, bsize = 100, alpha_spot = 1., alpha_img = 1., legend_frameon=True, suptitle=None):
+                   maintainScale = False, uniformColorScale = True, trimImageToSpots=False, borderWidth=0.1, bsize = 100, alpha_spot = 1., alpha_img = 1., legend_frameon=True, suptitle=None,
+                   saveName = None, dpi = 300, format = 'jpeg', meta_title=None, meta_title_spacer=' - '):
 
     if identity is None:
         alpha_spot = 0
@@ -177,7 +200,7 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
     if ids is None:
         ids = sorted(ads.keys())
     else:
-        ads = {id:ads[id] for id in ids}
+        ads = {id:ads[id] for id in ids if not id is None}
 
     n = len(ids)
 
@@ -225,88 +248,96 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
         maxSizex = 0
         maxSizey = 0
         for isample, sample in enumerate(ids):
-            sizex, sizey, sizez = ads[sample].uns['spatial']['library_id']['images'][img_key].shape
-            maxSizex = max(sizex, maxSizex) 
-            maxSizey = max(sizey, maxSizey)
+            if not sample is None:
+                sizex, sizey, sizez = ads[sample].uns['spatial']['library_id']['images'][img_key].shape
+                maxSizex = max(sizex, maxSizex) 
+                maxSizey = max(sizey, maxSizey)
 
     for isample, sample in enumerate(ids):
         i, j = int((isample - isample%nx)/nx), isample%nx
         ax = axs[i, j]
-        sf = ads[sample].uns['spatial']['library_id']['scalefactors']['tissue_%s_scalef' % img_key]
 
-        if spot_size is None:
-            spot_size = ads[sample].uns['spatial']['library_id']['scalefactors']['spot_diameter_fullres']
-
-        sizex, sizey, sizez = ads[sample].uns['spatial']['library_id']['images'][img_key].shape
-        
-        if maintainScale:
-            sizex, sizey = maxSizex, maxSizey
+        if sample is None:
+            ax.axis('off')
         else:
+            sf = ads[sample].uns['spatial']['library_id']['scalefactors']['tissue_%s_scalef' % img_key]
+
+            if spot_size is None:
+                spot_size = ads[sample].uns['spatial']['library_id']['scalefactors']['spot_diameter_fullres']
+
             sizex, sizey, sizez = ads[sample].uns['spatial']['library_id']['images'][img_key].shape
+        
+            if maintainScale:
+                sizex, sizey = maxSizex, maxSizey
+            else:
+                sizex, sizey, sizez = ads[sample].uns['spatial']['library_id']['images'][img_key].shape
 
-        if not uniformColorScale:
-            try:
-                if identity in ads[ids[0]].obs.columns:
-                    ar = np.array([(se := ads[sample].obs[identity]).quantile(0.025), se.quantile(0.975)]).T
-                else:
-                    ar = np.array([(se := ads[sample][:, identity].to_df()[identity]).quantile(0.025), se.quantile(0.975)]).T
+            if not uniformColorScale:
+                try:
+                    if identity in ads[ids[0]].obs.columns:
+                        ar = np.array([(se := ads[sample].obs[identity]).quantile(0.025), se.quantile(0.975)]).T
+                    else:
+                        ar = np.array([(se := ads[sample][:, identity].to_df()[identity]).quantile(0.025), se.quantile(0.975)]).T
 
-                if vmin is None:
-                    _vmin = ar[0]
-                if vmax is None:
-                    _vmax = ar[1]
-            except Exception as exception:
-                print(exception)
-                if vmin is None:
-                    _vmin = 0
-                if vmax is None:
-                    _vmax = 1
+                    if vmin is None:
+                        _vmin = ar[0]
+                    if vmax is None:
+                        _vmax = ar[1]
+                except Exception as exception:
+                    print(exception)
+                    if vmin is None:
+                        _vmin = 0
+                    if vmax is None:
+                        _vmax = 1
 
-        if trimImageToSpots:
-            vspatial = ads[sample].obsm['spatial']
-            cminx, cminy = vspatial.min(axis=0).tolist()
-            cmaxx, cmaxy = vspatial.max(axis=0).tolist()
-            cspanx, cspany = cmaxx - cminx, cmaxy - cminy
+            if trimImageToSpots:
+                vspatial = ads[sample].obsm['spatial']
+                cminx, cminy = vspatial.min(axis=0).tolist()
+                cmaxx, cmaxy = vspatial.max(axis=0).tolist()
+                cspanx, cspany = cmaxx - cminx, cmaxy - cminy
 
-            delta_cspanx = cspanx * borderWidth
-            delta_cspany = cspany * borderWidth
+                delta_cspanx = cspanx * borderWidth
+                delta_cspany = cspany * borderWidth
 
-            crop_coord = [cminx - delta_cspanx, cmaxx + delta_cspanx,
-                          cminy - delta_cspany, cmaxy + delta_cspany]
-        else:
-            crop_coord = [0, sizey/sf, 0, sizex/sf]
+                crop_coord = [cminx - delta_cspanx, cmaxx + delta_cspanx,
+                              cminy - delta_cspany, cmaxy + delta_cspany]
+            else:
+                crop_coord = [0, sizey/sf, 0, sizex/sf]
 
-        ad_temp = ads[sample].copy()
+            ad_temp = ads[sample].copy()
 
-        if not identity is None:
-            if not identity in ad_temp.obs.columns:
-                ad_temp.obs[identity] = ad_temp[:, [identity]].to_df()[identity]
-                tg = ad_temp.var.index[:2]
-                ad_temp = ad_temp[:, [tg[0]] if tg[0]!=identity else [tg[1]]]
-                ad_temp.X = None
+            if not identity is None:
+                if not identity in ad_temp.obs.columns:
+                    ad_temp.obs[identity] = ad_temp[:, [identity]].to_df()[identity]
+                    tg = ad_temp.var.index[:2]
+                    ad_temp = ad_temp[:, [tg[0]] if tg[0]!=identity else [tg[1]]]
+                    ad_temp.X = None
 
-            if hide_zeros:
-                ad_temp.obs[identity] = ad_temp.obs[identity].replace(0, np.nan)
+                if hide_zeros:
+                    ad_temp.obs[identity] = ad_temp.obs[identity].replace(0, np.nan)
 
-        sc.pl.spatial(ad_temp, img_key=img_key, color=identity, palette=palette, title=sample.replace('_', ' '), 
-                        spot_size=spot_size, alpha=alpha_spot, alpha_img=alpha_img, show=False, ax=ax, crop_coord=crop_coord, legend_loc='on data 2',
-                        vmin=_vmin, vmax=_vmax, cmap=cmap)
+            ptitle = sample.replace('_', ' ')
+            if not meta_title is None:
+                ptitle += meta_title_spacer + str(ad_temp.obs[meta_title][0])
+            sc.pl.spatial(ad_temp, img_key=img_key, color=identity, palette=palette, title=ptitle, 
+                            spot_size=spot_size, alpha=alpha_spot, alpha_img=alpha_img, show=False, ax=ax, crop_coord=crop_coord, legend_loc='on data 2',
+                            vmin=_vmin, vmax=_vmax, cmap=cmap)
 
-        if not maintainScale:
-            px = int(10**3*np.round((0.001*bsize/sf), 1))
-            ax.text(0.05*sizey, 0.93*sizex-bsize/10, '%s px' % px, fontsize=8)
-            ax.add_collection(PatchCollection([mpatches.Rectangle([0.05*sizey, 0.95*sizex-bsize/10], bsize, bsize/10, ec="none")], color='k', alpha=0.75))
+            if not maintainScale:
+                px = int(10**3*np.round((0.001*bsize/sf), 1))
+                ax.text(0.05*sizey, 0.93*sizex-bsize/10, '%s px' % px, fontsize=8)
+                ax.add_collection(PatchCollection([mpatches.Rectangle([0.05*sizey, 0.95*sizex-bsize/10], bsize, bsize/10, ec="none")], color='k', alpha=0.75))
 
-        if not identity is None:
-            if is_cat:
-                # Otherwise it is a gene, for example, and not a categorical variable
-                if identity in ads[sample].obs.columns:
-                    for ilabel, label in enumerate(ads[sample].obs[identity].cat.categories):
-                        color = ads[sample].uns[identity + '_colors'][ilabel]
-                        ax.scatter([], [], color=color, label=label)
+            if not identity is None:
+                if is_cat:
+                    # Otherwise it is a gene, for example, and not a categorical variable
+                    if identity in ads[sample].obs.columns:
+                        for ilabel, label in enumerate(ads[sample].obs[identity].cat.categories):
+                            color = ads[sample].uns[identity + '_colors'][ilabel]
+                            ax.scatter([], [], color=color, label=label)
 
-                    if not no_legend:
-                        ax.legend(frameon=legend_frameon, loc='upper left', fontsize=fontsize, markerscale=markerscale, fancybox=True, shadow=False, framealpha=0.65)
+                        if not no_legend:
+                            ax.legend(frameon=legend_frameon, loc='upper left', fontsize=fontsize, markerscale=markerscale, fancybox=True, shadow=False, framealpha=0.65)
 
     for iext in range(isample+1, nx*ny):
         i, j = int((iext - iext%nx)/nx), iext%nx
@@ -317,13 +348,16 @@ def plotSpatialAll(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 
     if suptitle is None:
         fig.suptitle(identity if title is None else title, x=x, y=y, ha='left', size='x-large', weight='demi')
 
+    if not saveName is None:
+        plt.savefig(saveName + '.' + format, dpi=dpi, format=format)
+
     return
 
 
 def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize = 5, fy=1.0, identity = None, palette = 'tab20', cmap = 'rainbow', title = None,
                    spot_size = 425, fontsize = 8, markerscale = 1.25, wspace = 0.15, hspace = 0.2, img_key = 'lowres',  x = 0.12, y = 0.93, key_added = 'avgdist',
                    maintainScale = False, bsize = 100, invert = False, decay_power = 3, absolute_cutoff=None, alpha_quantile = 0.5, method = 'MED', use_raw_distances=True, R=1,
-                   linewidth_factor = 1.5, alpha=1.0, alpha_img=1.0, cacheEdges=False, cacheDir='cache', useSavedCache=True, noplot=False, **kwargs):
+                   linewidth_factor = 1.5, alpha=1.0, alpha_img=1.0, cacheEdges=False, cacheDir='cache', useSavedCache=True, noplot=False, legend_frameon=True, suptitle=None, **kwargs):
 
     if ids is None:
         ids = sorted(ads.keys())
@@ -465,7 +499,23 @@ def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize =
                 with open(cacheName, 'wb') as tempfile:
                     pickle.dump((egdes, edgeweights), tempfile, protocol=4)
 
-        ads[sample].obs[key_added] = np.array(avgweight)
+
+        alphas = pd.Series(avgweight)
+        alphas -= alphas.min()
+        if absolute_cutoff is None:
+            q = alphas.quantile(alpha_quantile)
+        else:
+            q = absolute_cutoff
+
+        alphas /= q
+        alphas[alphas > 1] = 1
+        alphas = alphas.values**decay_power
+
+        if invert:
+            alphas = 1 - alphas
+
+        ads[sample].obs[key_added] = np.array(alphas)
+        #ads[sample].obs[key_added] = np.array(avgweight)
         #ads[sample].obs[key_added] -= ads[sample].obs[key_added].quantile(0.01)
         #ads[sample].obs[key_added][ads[sample].obs[key_added] < 0] = 0
         #ads[sample].obs[key_added] /= ads[sample].obs[key_added].quantile(0.99)
@@ -501,7 +551,8 @@ def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize =
                             color = ads[sample].uns[identity + '_colors'][ilabel]
                             ax.scatter([], [], color=color, label=label)
 
-                        ax.legend(frameon=False, loc='upper left', fontsize=fontsize, markerscale=markerscale)
+                        #ax.legend(frameon=False, loc='upper left', fontsize=fontsize, markerscale=markerscale)
+                        ax.legend(frameon=legend_frameon, loc='best', fontsize=fontsize, markerscale=markerscale, fancybox=True, shadow=False, framealpha=0.65)
 
     if not noplot:
         for iext in range(isample+1, nx*ny):
@@ -509,7 +560,8 @@ def plotSpatialEdge(ads, ids = None, f = 0.75, nx = None, ny = None, panelSize =
 
         plt.subplots_adjust(wspace=wspace, hspace=hspace)
 
-        fig.suptitle(identity if title is None else title, x=x, y=y, ha='left', size='x-large', weight='demi')
+        if suptitle is None:
+            fig.suptitle(identity if title is None else title, x=x, y=y, ha='left', size='x-large', weight='demi')
         plt.show()
 
     return

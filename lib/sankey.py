@@ -30,7 +30,8 @@ def getCountsDataframe(se1, se2, tagForMissing='N/A'):
 
 def makeSankeyDiagram(df, colormapForIndex = None, colormapForColumns = None, title = '', attemptSavingHTML = False, quality = 4,
                       linksColor = 'rgba(100,100,100,0.6)', indexNodeColor='grey', columnsNodeColor='grey',
-                      width = 400, height = 400, border = 20, nodeLabelsFontSize = 15, nameAppend = '_Sankey_diagram', saveDir=''):
+                      width = 400, height = 400, border = 20, nodeLabelsFontSize = 15, nameAppend = '_Sankey_diagram', saveDir='',
+                      buttonFormat = 'png', buttonScale = 20, buttonWidth = 800, buttonHeight = 400):
 
     def makeStrRGBA(t):
         t = to_rgba(t)
@@ -95,7 +96,18 @@ def makeSankeyDiagram(df, colormapForIndex = None, colormapForColumns = None, ti
     except Exception as exception:
         print('Cannot save static image (likely due to missing orca). Saving to interactive html')
 
-    return fig
+    config = {'toImageButtonOptions': {
+                'format': buttonFormat, # one of png, svg, jpeg, webp
+                'filename': 'custom_figure',
+                'height': buttonHeight,
+                'width': buttonWidth,
+                'scale': buttonScale,
+                }
+            }
+
+    fig.show(config=config)
+
+    return
 
 from sklearn.cluster import SpectralCoclustering
 def reorder(df, n_co_clusters=4):

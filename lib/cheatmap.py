@@ -34,7 +34,7 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
           addGeneLabels=False, fontsizeGeneLabels=12, saveFig=False, borderWidth=0.005, groupWidth=0.0375, dendrogramLineWidth=2.0, dendrogramLineColor='#555555', safetyLimit=1000,
           addLinesOnHeatmap=True, addLinesOnGroups=True, vmin=None, vmax=None, returnDistancesOnly=False, bootstrapObs=False, bootstrapNum=100,
           linkageMethod='ward', keepOriginalOrderObs=False, linkageMetric='euclidean', # 'correlation', 'cosine', 'euclidean'
-          useMEDforObs=False, optimalOrderingForObs=False, useMEDforObsGroups=False, sampleMED=50, groupfontsize=10,
+          useMEDforObs=False, optimalOrderingForObs=False, useMEDforObsGroups=False, sampleMED=50, seed=None, groupfontsize=10,
           clusterObsByGroups=True, reference=dict(), referenceLabel='Reference', colorbarLabels=None, colorbarLabel='Gene Expression', figureName='figure.png', dpi=600):
     
     # colorbarLabels: ['High', 'Low'], ['Ampl.', 'Del.'], None
@@ -42,6 +42,8 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
     #print('Before filtering:', df.shape)
     cols = df_groups.columns.values.tolist()
     temp_sel = df_groups.reset_index().set_index(cols).groupby(level=list(range(len(cols))))['spot'].count()
+    if type(temp_sel.index) is pd.Index:
+        temp_sel.index = pd.MultiIndex.from_arrays(temp_sel.index.to_frame().values.T, names=cols)
     df_groups = df_groups.loc[pd.Index(df_groups.values).isin(temp_sel[temp_sel>=minCellsPerGroup].index)]
     df = df[df_groups.index]
     print('After filtering:', df.shape)
@@ -100,6 +102,8 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
 
     dfg = dfg.reindex(origOrder, axis=1)
     seg = gr.count().iloc[0].reindex(dfg.columns)
+
+    np.random.seed(seed)
     
     # Add dendrogram obs
     if clusterObs and not keepOriginalOrderObs:  
@@ -406,9 +410,10 @@ def cplot(df, df_groups, groupby=None, figsize=(20,15), clusterVar=True, cluster
     df_reordered = df_reordered.T
     
     if saveFig:
+        plt.tight_layout()
         plt.savefig(figureName, dpi=dpi)
     
-    if useMEDforObsGroups and clusterObsByGroups:
+    if useMEDforObsGroups and clusterObsByGroups and clusterObs:
         return root, tree, meta
     else:
         return df_reordered.reindex(index=df_reordered.index[::-1])

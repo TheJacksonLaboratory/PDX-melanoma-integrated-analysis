@@ -123,7 +123,10 @@ def vplot(df, dfc, name='Name', figsize=(20,5), palette=None, step=None, q=[0, 1
         last_pos += l/2 
         
     for i, s in enumerate(pos):
-        label = df.columns[i].split('_')[1] + '\n' + df.columns[i].split('_')[2]
+        try:
+            label = df.columns[i].split('_')[2] + '\n' + df.columns[i].split('_')[3]
+        except:
+            label = df.columns[i].split('_')[1] + '\n' + df.columns[i].split('_')[2]
         if label == '1':
             label = 'C4'
         ttext = ax.text(pos[i]+0.5, tmax, label, ha='center')

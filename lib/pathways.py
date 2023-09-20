@@ -31,6 +31,9 @@ genesDicts.update({'PANCREAS_BETA_CELLS': loadPathway23(filesPath + 'HALLMARK_PA
 genesDicts.update({'PANCREAS_NEOPLASM': loadPathway23(filesPath + 'HP_NEOPLASM_OF_THE_PANCREAS.v2023.1.Hs.tsv')})
 
 
+genesDicts.update({'PANCREAS_GAMMA_CELLS': loadPathway23(filesPath + 'VANGURP_PANCREATIC_GAMMA_CELL.v2023.1.Hs.tsv')})
+genesDicts.update({'PANCREAS_ALPHA_CELLS': loadPathway23(filesPath + 'MURARO_PANCREAS_ALPHA_CELL.v2023.1.Hs.tsv')})
+genesDicts.update({'PANCREAS_DELTA_CELLS': loadPathway23(filesPath + 'MURARO_PANCREAS_DELTA_CELL.v2023.1.Hs.tsv')})
 
 
 

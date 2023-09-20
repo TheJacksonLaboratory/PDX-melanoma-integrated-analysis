@@ -1,4 +1,5 @@
 
+import os
 import numpy as np
 import pandas as pd
 
@@ -7,7 +8,9 @@ loadPathwayRGD = lambda name: np.sort(pd.read_csv(name, delimiter='\t', index_co
 loadPathway = lambda name: np.sort(pd.read_csv(name, delimiter='\t', index_col=0).loc['MAPPED_SYMBOLS'].values).tolist()[0].split(',')
 loadPathway23 = lambda name: np.sort(pd.read_csv(name, delimiter='\t', index_col=0).loc['GENE_SYMBOLS'].values).tolist()[0].split(',')
 
-filesPath = 'c:/Projects/A_ST/github-pipelines/PDX-melanoma-integrated-analysis/pathways/'
+filesPath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+filesPath = os.path.join(filesPath, 'pathways') + '/'
+print('Loading pathways from :', filesPath)
 
 genesDicts.update({'SHOCK': loadPathway23(filesPath + 'HP_SHOCK.v2023.1.Hs.tsv')})
 genesDicts.update({'STRESS': loadPathway23(filesPath + 'BIOCARTA_STRESS_PATHWAY.v2023.1.Hs.tsv')})

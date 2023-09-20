@@ -25,6 +25,15 @@ genesDicts.update({'CELL_CYCLE_CHECKPOINT': loadPathway23(filesPath + 'GOBP_CELL
 genesDicts.update({'POS_REG_CELL_CYCLE': loadPathway23(filesPath + 'GOBP_POSITIVE_REGULATION_OF_CELL_CYCLE.v2023.1.Hs.tsv')})
 genesDicts.update({'APOPTOTIC_SIGNALING': loadPathway23(filesPath + 'GOBP_REGULATION_OF_APOPTOTIC_SIGNALING_PATHWAY.v2023.1.Hs.tsv')})
 
+genesDicts.update({'PANCREAS_ABNORMALITY': loadPathway23(filesPath + 'HP_ABNORMALITY_OF_THE_PANCREAS.v2023.1.Hs.tsv')})
+genesDicts.update({'PANCREAS_ABNORMALITY_MORPHOLOGY': loadPathway23(filesPath + 'HP_ABNORMAL_PANCREAS_MORPHOLOGY.v2023.1.Hs.tsv')})
+genesDicts.update({'PANCREAS_BETA_CELLS': loadPathway23(filesPath + 'HALLMARK_PANCREAS_BETA_CELLS.v2023.1.Hs.tsv')})
+
+
+
+
+
+
 
 genesDicts.update({'PID_AP1_PATHWAY': loadPathway23(filesPath + 'PID_AP1_PATHWAY.v2023.1.Hs.tsv')})
 

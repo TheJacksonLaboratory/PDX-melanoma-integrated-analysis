@@ -28,6 +28,7 @@ genesDicts.update({'APOPTOTIC_SIGNALING': loadPathway23(filesPath + 'GOBP_REGULA
 genesDicts.update({'PANCREAS_ABNORMALITY': loadPathway23(filesPath + 'HP_ABNORMALITY_OF_THE_PANCREAS.v2023.1.Hs.tsv')})
 genesDicts.update({'PANCREAS_ABNORMALITY_MORPHOLOGY': loadPathway23(filesPath + 'HP_ABNORMAL_PANCREAS_MORPHOLOGY.v2023.1.Hs.tsv')})
 genesDicts.update({'PANCREAS_BETA_CELLS': loadPathway23(filesPath + 'HALLMARK_PANCREAS_BETA_CELLS.v2023.1.Hs.tsv')})
+genesDicts.update({'PANCREAS_NEOPLASM': loadPathway23(filesPath + 'HP_NEOPLASM_OF_THE_PANCREAS.v2023.1.Hs.tsv')})
 
 
 

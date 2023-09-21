@@ -35,8 +35,8 @@ genesDicts.update({'PANCREAS_GAMMA_CELLS': loadPathway23(filesPath + 'VANGURP_PA
 genesDicts.update({'PANCREAS_ALPHA_CELLS': loadPathway23(filesPath + 'MURARO_PANCREAS_ALPHA_CELL.v2023.1.Hs.tsv')})
 genesDicts.update({'PANCREAS_DELTA_CELLS': loadPathway23(filesPath + 'MURARO_PANCREAS_DELTA_CELL.v2023.1.Hs.tsv')})
 
-
-
+genesDicts.update({'VEGFA_VEGFR2_SIGNALING': loadPathway23(filesPath + 'WP_VEGFAVEGFR2_SIGNALING.v2023.1.Hs.tsv')})
+genesDicts.update({'CYTOKINE_SIGNALING': loadPathway23(filesPath + 'REACTOME_CYTOKINE_SIGNALING_IN_IMMUNE_SYSTEM.v2023.1.Hs.tsv')})
 
 
 genesDicts.update({'PID_AP1_PATHWAY': loadPathway23(filesPath + 'PID_AP1_PATHWAY.v2023.1.Hs.tsv')})
